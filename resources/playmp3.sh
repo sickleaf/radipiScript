@@ -6,7 +6,7 @@
 extention="mp3"
 defaultNumber=100;
 player=mpv
-option='--no-video --msg-level=all=warn'
+option='--no-video --msg-level=all=info'
 
 resourcePath="$1"
 number="$2"
@@ -16,6 +16,9 @@ if [ "$2" = '' ]; then
 	number=$defaultNumber;
 fi
 
-fileList=`find $1 -type f -name ${namePattern}`;
+fileList=$(find ${resourcePath} -type f -name ${namePattern} | shuf | head -$(expr ${number}));
 
-cat fileList | shuf | head -`expr $2` | while read line; do ${player} ${option} "$line"; done
+for fileName in ${fileList}
+do
+	${player} ${option} ${fileName};
+done;
