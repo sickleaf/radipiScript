@@ -8,7 +8,7 @@ BASESCRIPTNAME=script;
 
 # USER
 
-APACHEUSER=www-data;
+OWNGROUP=www-data;
 RADIPIUSER=radipi;
 
 # DIR
@@ -78,10 +78,10 @@ fi
 # [chmod,chown]change scripts permission,owner user/group  in SCRIPTDIR
 ################################################
 
-chown root:${APACHEUSER} ${SCRIPTDIR}/*.sh
+chown root:${OWNGROUP} ${SCRIPTDIR}/*.sh
 chmod 550 ${SCRIPTDIR}/*.sh
 if [ $? -eq 0 ]; then
-	echo "[chown,chmod]${SCRIPTDIR}/*.sh set permission as 550, set owner/group as root/${APACHEUSER}";
+	echo "[chown,chmod]${SCRIPTDIR}/*.sh set permission as 550, set owner/group as root/${OWNGROUP}";
 fi
 
 
