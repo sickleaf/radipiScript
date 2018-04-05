@@ -8,7 +8,6 @@ BASESCRIPTNAME=script;
 
 # USER
 
-OWNGROUP=www-data;
 RADIPIUSER=radipi;
 
 # DIR
@@ -20,7 +19,6 @@ LOCALSCRIPTDIR=${SCRIPTDIR}/${LOCALSCRIPTNAME}
 # PATH
 
 BASEDIRFULLPATH=$(cd $BASEDIR; pwd);
-SCRIPTLIST=`ls -ld $SCRIPTDIR/*.sh | awk '{print $NF}'`;
 
 
 ################################################
@@ -66,7 +64,7 @@ if [ $? -eq 0 ]; then
 fi
 
 ################################################
-# [chmod]change scripts permission  in LOCALSCRIPTDIR
+# [chmod]change scripts permission in LOCALSCRIPTDIR
 ################################################
 
 chmod 755 ${LOCALSCRIPTDIR}/*.sh
@@ -74,15 +72,5 @@ if [ $? -eq 0 ]; then
 	echo "[chmod]${LOCALSCRIPTDIR}/*.sh set permission as 755";
 fi
 
-################################################
-# [chmod,chown]change scripts permission,owner user/group  in SCRIPTDIR
-################################################
 
-chown root:${OWNGROUP} ${SCRIPTDIR}/*.sh
-chmod 550 ${SCRIPTDIR}/*.sh
-if [ $? -eq 0 ]; then
-	echo "[chown,chmod]${SCRIPTDIR}/*.sh set permission as 550, set owner/group as root/${OWNGROUP}";
-fi
-
-
-echo "setup finished.";
+echo "<< setupScriptDir.sh>> setup finished.";
