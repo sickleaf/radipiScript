@@ -12,9 +12,10 @@ url_parts=""
 nhkurl="http://www3.nhk.or.jp/netradio"
 nhkplayerurl="$nhkurl/files/swf/rtmpe.swf"
 rtmpepath="${wkdir}"
+keyDir="/home/radipi/xem"
 
 mail=
-pass=
+pass=$(openssl rsautl -decrypt -inkey ${keyDir}/xpas -in ${keyDir}/xkey)
 cookiefile="${wkdir}/cookie.txt"
 loginfile="${wkdir}/login"
 
@@ -44,6 +45,10 @@ show_usage() {
 # radiko premium
 ###
 if [ $mail ]; then
+
+    rm -f ${cookiefile}
+    rm -f ${loginfile}
+
   wget -q --save-cookie=$cookiefile \
        --keep-session-cookies \
        --post-data="mail=$mail&pass=$pass" \
@@ -60,7 +65,9 @@ authorize() {
     #
     # delete previous setting file
     #
-    rm ${loginfile} ${cookiefile} ${auth1_fms} ${auth2_fms}
+    rm -f ${keyfile} 
+    rm -f ${auth1_fms}
+    rm -f ${auth2_fms}
 
     #
     # get player
@@ -109,7 +116,8 @@ authorize() {
     #echo "offset: ${offset} 1>&2
     #echo "length: ${length} 1>&2
     #echo "partialkey: ${partialkey}" 1>&2
-    rm -f ${auth1_fms}
+    #rm -f ${auth1_fms}
+
     #
     # access auth2_fms
     #
@@ -132,8 +140,8 @@ authorize() {
     #echo "authentication success" 1>&2
     areaid=`perl -ne 'print $1 if(/^([^,]+),/i)' ${auth2_fms}`
     #echo "areaid: ${areaid}" 1>&2
-    rm -f ${auth2_fms}
-    #
+    #rm -f ${auth2_fms}
+    
     # get stream-url
     #
     wget -q \
@@ -167,22 +175,6 @@ play() {
         --live \
         --stop ${duration} | \
         mpv - --quiet
-}
-
-# debug
-debug() {
-    echo "-p : ${OPTION_p}"
-    echo "-d : ${OPTION_d}    value: \"${VALUE_d}\""
-    echo "-f : ${OPTION_f}    value: \"${VALUE_f}\""
-    echo "-t : ${OPTION_t}    value: \"${VALUE_t}\""
-    echo "-s : ${OPTION_s}    value: \"${VALUE_s}\""
-    echo ''
-    echo "channel : \"${channel}\""
-    echo "outdir  : \"${outdir}\""
-    echo "filename: \"${filename}\""
-    echo "duration: \"${duration}\""
-    echo "starting: \"${starting}\""
-    echo ''
 }
 
 # Get Option
