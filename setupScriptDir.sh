@@ -3,7 +3,7 @@
 # NAME
 
 SCRIPTNAME=Script;
-LOCALSCRIPTNAME=localScript;
+BROWSERSCRIPTNAME=browserScript;
 BASESCRIPTNAME=script;
 
 # USER
@@ -14,7 +14,7 @@ RADIPIUSER=radipi;
 
 BASEDIR=$(dirname $0)/${BASESCRIPTNAME};
 SCRIPTDIR=/home/${RADIPIUSER}/${SCRIPTNAME}
-LOCALSCRIPTDIR=${SCRIPTDIR}/${LOCALSCRIPTNAME}
+BROWSERSCRIPTDIR=${SCRIPTDIR}/${BROWSERSCRIPTNAME}
 
 # PATH
 
@@ -45,31 +45,31 @@ do
 done;
 
 #################################################
-# [mkdir] LOCALSCRIPTDIR
+# [mkdir] BROWSERSCRIPTDIR
 #################################################
 
-mkdir -p ${LOCALSCRIPTDIR};
+mkdir -p ${BROWSERSCRIPTDIR};
 if [ $? -eq 0 ]; then
-	echo "[make directory] ${LOCALSCRIPTDIR}";
+	echo "[make directory] ${BROWSERSCRIPTDIR}";
 fi
 
 
 ################################################
-# [cp]scripts in SCRIPTDIR into LOCALSCRIPTDIR
+# [cp]scripts in SCRIPTDIR into BROWSERSCRIPTDIR
 ################################################
 
-cp ${SCRIPTDIR}/*.sh ${LOCALSCRIPTDIR};
+cp ${SCRIPTDIR}/*.sh ${BROWSERSCRIPTDIR};
 if [ $? -eq 0 ]; then
-	echo "[copy script]${LOCALSCRIPTDIR}/*.sh ${LOCALSCRIPTDIR}";
+	echo "[copy script]${BROWSERSCRIPTDIR}/*.sh ${BROWSERSCRIPTDIR}";
 fi
 
 ################################################
-# [chmod]change scripts permission in LOCALSCRIPTDIR
+# [chmod]add permission(execute) into scripts in SCRIPTDIR
 ################################################
 
-chmod 755 ${LOCALSCRIPTDIR}/*.sh
+chmod 755 ${SCRIPTDIR}/*.sh
 if [ $? -eq 0 ]; then
-	echo "[chmod]${LOCALSCRIPTDIR}/*.sh set permission as 755";
+	echo "[chmod]${SCRIPTDIR}/*.sh set permission as 755";
 fi
 
 

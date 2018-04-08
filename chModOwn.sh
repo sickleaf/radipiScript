@@ -3,6 +3,7 @@
 # NAME
 
 SCRIPTNAME=Script;
+BROWSERNAME=browserScript;
 
 # USER
 
@@ -11,7 +12,7 @@ RADIPIUSER=radipi;
 
 # DIR
 
-SCRIPTDIR=/home/${RADIPIUSER}/${SCRIPTNAME}
+SCRIPTDIR=/home/${RADIPIUSER}/${SCRIPTNAME}/${BROWSERNAME}
 
 ################################################
 # [chmod,chown]change scripts permission,owner user/group in SCRIPTDIR
