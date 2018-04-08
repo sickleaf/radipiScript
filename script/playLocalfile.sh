@@ -3,10 +3,20 @@
 #$1	resourcePath(absolute path)
 #$2	number
 
+if [ $# -lt 1 ]; then
+	echo "<<usage>>"
+	echo "specify (1)resourcePath and (2)file numbers for continuous play"
+	echo "(file numbers is optional"
+	echo "ex. play 5 songs in /mnt/radipiDrive -> $0 /mnt/radipiDrive 5"
+	exit 1
+fi
+
+
 extention="mp3"
 defaultNumber=100;
 player=mpv
-option='--no-video --msg-level=all=info'
+mpvSocket=/tmp/mpv.socket
+option="--no-video --msg-level=all=info --idle=no --input-ipc-server=${mpvSocket}"
 
 resourcePath="$1"
 number="$2"
