@@ -5,6 +5,7 @@
 SCRIPTNAME=Script;
 BROWSERSCRIPTNAME=browserScript;
 BASESCRIPTNAME=script;
+CONFIGNAME=config;
 
 # USER
 
@@ -18,6 +19,7 @@ BROWSERSCRIPTDIR=${SCRIPTDIR}/${BROWSERSCRIPTNAME}
 
 # PATH
 
+ROOTPATH=$(cd $(dirname $0); pwd);
 BASEDIRFULLPATH=$(cd $BASEDIR; pwd);
 
 
@@ -70,6 +72,14 @@ fi
 chmod 755 ${SCRIPTDIR}/*.sh
 if [ $? -eq 0 ]; then
 	echo "[chmod]${SCRIPTDIR}/*.sh set permission as 755";
+fi
+
+################################################
+# [cp]copy SCRIPTDIR/config folder
+################################################
+cp -pR ${ROOTPATH}/${CONFIGNAME} ${SCRIPTDIR};
+if [ $? -eq 0 ]; then
+	echo "[copy folder]${SCRIPTDIR}/${CONFIGNAME}";
 fi
 
 
