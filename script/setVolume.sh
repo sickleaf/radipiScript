@@ -8,7 +8,7 @@
 # bluealsaControlName = $(amixer -D bluealsa | grep "mixer control" | cut -d "'" -f 2)
 
 
-if [ $# -lt 2 ]; then
+if [ $# -lt 1 ]; then
 	echo "<<usage>>"
 	echo "1) specify absolute volume level"
 	echo "ex. set 90% ->  $0 90 "
