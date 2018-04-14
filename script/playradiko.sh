@@ -12,10 +12,13 @@ url_parts=""
 nhkurl="http://www3.nhk.or.jp/netradio"
 nhkplayerurl="$nhkurl/files/swf/rtmpe.swf"
 rtmpepath="${wkdir}"
+
+scriptDir=$(cd $(dirname $0); pwd);
 keyDir="/home/radipi/xem"
 
-mail=
-pass=$(openssl rsautl -decrypt -inkey ${keyDir}/xpas -in ${keyDir}/xkey)
+mail=$(cat ${scriptDir}/loginInfo.sh | grep mail | cut -d "=" -f 2)
+pass=$(sh ${scriptDir}/loginInfo.sh ${keyDir})
+
 cookiefile="${wkdir}/cookie.txt"
 loginfile="${wkdir}/login"
 

@@ -9,6 +9,7 @@ radioName="Radio"
 childScriptName="timefreeChild.sh"
 
 homedir="/home/radipi"
+keydir="/home/radipi/xem"
 wkdir="${homedir}/${radioName}"
 
 scriptDir=$(cd $(dirname $0); pwd);
@@ -18,8 +19,8 @@ childScriptPath="${scriptDir}/${childScriptName}"
 mpvSocket=/tmp/mpv.socket
 option="--no-video --msg-level=all=info --idle=no --input-ipc-server=${mpvSocket}"
 
-mail=
-pass=
+mail=$(cat ${scriptDir}/loginInfo.sh | grep mail | cut -d "=" -f 2)
+pass=$(sh ${scriptDir}/loginInfo.sh ${keydir})
 
 
 if [ ! -d $wkdir ]; then
@@ -47,16 +48,21 @@ fi
 
 auth1_fms="${wkdir}/free_${channel}.auth1_fms"
 auth2_fms="${wkdir}/free_${channel}.auth2_fms"
+
+loginfile="${wkdir}/login"
 cookiefile=${wkdir}/cookie.txt
 playerfile=${wkdir}/player.swf
 keyfile=${wkdir}/authkey.png
-loginfile="${wkdir}/login"
+
 baseinput="${wkdir}/baseinput.m3u8"
 grepinput="${wkdir}/grepinput.m3u8"
+
 wholeAAC="${dirPath}/wholeAAC.txt"
+
 firstAAC="${dirPath}/firstAAC.txt"
 secondAAC="${dirPath}/secondAAC.txt"
 restAAC="${dirPath}/restAAC.txt"
+
 firstAACfile="${dirPath}/firstAAC.aac"
 secondAACfile="${dirPath}/secondAAC.aac"
 restAACfile="${dirPath}/restAAC.aac"
