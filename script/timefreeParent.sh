@@ -3,49 +3,89 @@
 # 20161120 modified by mapi
 # 20170514 modified by sickleaf
 # 20170918 modified by sickleaf
-wkdir="/var/tmp"
-scriptPath="/home/radipi/script/localScript"
-childScriptName="timefreeChild"
 
-# cd ${wkdir}
+scriptName="Script"
+radioName="Radio"
+childScriptName="timefreeChild.sh"
+
+homedir="/home/radipi"
+wkdir="${homedir}/${radioName}"
+
+scriptDir=$(cd $(dirname $0); pwd);
+
+childScriptPath="${scriptDir}/${childScriptName}"
+
+mpvSocket=/tmp/mpv.socket
+option="--no-video --msg-level=all=info --idle=no --input-ipc-server=${mpvSocket}"
+
+mail=
+pass=
+
+
+if [ ! -d $wkdir ]; then
+	mkdir -p $wkdir
+	echo "[make directory]:$wkdir"
+fi
+
+
 
 if [ $# -eq 3 ]; then
 	channel=$1
 	fromtime=$2
 	totime=$3
+
+	dirName="${fromtime}_${channel}"
+	dirPath="${wkdir}/${dirName}"
+	tmpDirPath="${dirPath}/tmp"
+
+	mkdir -m 777 ${dirPath}
+	mkdir -m 777 ${tmpDirPath}
 else
   echo "usage : $0 channel_name fromtime totime"
   exit 1
 fi
 
-mail=
-pass=
+auth1_fms="${wkdir}/free_${channel}.auth1_fms"
+auth2_fms="${wkdir}/free_${channel}.auth2_fms"
+cookiefile=${wkdir}/cookie.txt
+playerfile=${wkdir}/player.swf
+keyfile=${wkdir}/authkey.png
+loginfile="${wkdir}/login"
+baseinput="${wkdir}/baseinput.m3u8"
+grepinput="${wkdir}/grepinput.m3u8"
+wholeAAC="${dirPath}/wholeAAC.txt"
+firstAAC="${dirPath}/firstAAC.txt"
+secondAAC="${dirPath}/secondAAC.txt"
+restAAC="${dirPath}/restAAC.txt"
+firstAACfile="${dirPath}/firstAAC.aac"
+secondAACfile="${dirPath}/secondAAC.aac"
+restAACfile="${dirPath}/restAAC.aac"
+
+
+playerurl=http://radiko.jp/apps/js/flash/myplayer-release.swf
+
+#------------------------------------------------------------
+#------------------------------------------------------------
+#------------------------------------------------------------
+#------------------------------------------------------------
+
 
 echo "--- Play Information"
 echo ""
 echo "Channel   : $channel"
 echo "FromTime  : $fromtime"
 echo "ToTime    : $totime"
-echo "Mail      : $mail"
-echo "Pass      : $pass"
 echo ""
 
-auth1_fms="${wkdir}/free_${channel}.auth1_fms"
-auth2_fms="${wkdir}/free_${channel}.auth2_fms"
-#------------------------------------------------------------
-playerurl=http://radiko.jp/apps/js/flash/myplayer-release.swf
-cookiefile=${wkdir}/cookie.txt
-playerfile=${wkdir}/player.swf
-keyfile=${wkdir}/authkey.png
-loginfile="${wkdir}/login"
-templist="${wkdir}/templist.m3u8"
-output="${wkdir}/${channel}_${fromtime}.m3u8"
 
 
 ###
 # radiko premium
 ###
 if [ $mail ]; then
+
+	rm -r ${cookiefile} ${loginfile}
+
   wget -q --save-cookie=$cookiefile \
        --keep-session-cookies \
        --post-data="mail=$mail&pass=$pass" \
@@ -58,6 +98,7 @@ if [ $mail ]; then
   fi
 fi
 
+	rm -r ${keyfile}
 
 #
 # get player
@@ -166,49 +207,35 @@ wget -q \
 	--post-data='flash=1' \
      	--load-cookies $cookiefile \
 	--no-check-certificate \
-	-O ${templist} \
+	-O ${baseinput} \
 	"https://radiko.jp/v2/api/ts/playlist.m3u8?l=15&station_id=$channel&ft=$fromtime&to=$totime"
 
-stream_url=`grep radiko ${templist}`
+stream_url=$(grep radiko ${baseinput})
 echo "[StreamURL] $stream_url"
 
-sudo rm ${wkdir}/aac/*
-sudo rm ${wkdir}/boxaac/*
-wget  $stream_url  -O ${output}
-sudo sh -c "grep radiko ${output} > ${wkdir}/aac.list"
+wget  $stream_url  -O ${grepinput}
+sh -c "grep radiko ${grepinput} > ${wholeAAC}"
  
-#if [ $? = 0 ]; then
-#	sudo rm ${wkdir}/*.m3u8
-#	sudo rm ${wkdir}/0830list.txt
-#fi
 
-	#first1min=`echo $2 | cut -c 9-12`
-
-	#directory sid_yyyymmdd_hhmm
-	#cat ${wklov}/aac.list | grep "${date}_${hhmm}" | while read line; sudo wget -nc -P ${wklov}/aac "$line"; done
-
-
-	cat ${wkdir}/aac.list | head -n 12 | while read line; do wget --no-verbose -nc -P ${wkdir}/aac "$line"; done
-	sh ${scriptPath}/${childScriptName}.sh ${wkdir} &
+	cat ${wholeAAC} | head -n 12 | while read line; do wget --no-verbose -nc -P ${tmpDirPath} "$line"; done
+	sh ${childScriptPath} ${dirPath} &
 
 	fixed_string=""
-	ls ${wkdir}/aac/* | head -n 12 > ${wkdir}/0830list.txt
+	ls ${tmpDirPath}/* | head -n 12 > ${firstAAC}
 	while read line;
 		do 
 			fixed_string="${fixed_string}"" -cat ""$line"
-	done < ${wkdir}/0830list.txt
+	done < ${firstAAC}
 
-	sudo MP4Box -sbr ${fixed_string} -new ${wkdir}/boxaac/0830.aac
+	MP4Box -sbr ${fixed_string} -new ${firstAACfile}
 
 
 	if [ $? = 0 ]; then
-		echo "get cont"
-		mpv ${wkdir}/boxaac/0830.aac  && mpv ${wkdir}/boxaac/cont.aac && mpv ${wkdir}/boxaac/rest.aac 
+		mpv ${option} ${firstAACfile}  && mpv  ${option} ${secondAACfile} && mpv  ${option} ${restAACfile} 
 
 	else
-		echo "0830 only"
-		mpv ${wkdir}/boxaac/0830.aac 
+		mpv ${option} ${firstAACfile}
 	fi
 
+	rm -r ${baseinput} ${grepinput}
 
-echo "all_fin"

@@ -1,33 +1,47 @@
 #!/bin/sh
 
-wkdir=$1
+dirPath=$1
+tmpDirPath=${dirPath}/tmp
+
+wholeAAC="${dirPath}/wholeAAC.txt"
+
+firstAAC="${dirPath}/firstAAC.txt"
+secondAAC="${dirPath}/secondAAC.txt"
+restAAC="${dirPath}/restAAC.txt"
+
+firstAACfile="${dirPath}/firstAAC.aac"
+secondAACfile="${dirPath}/secondAAC.aac"
+restAACfile="${dirPath}/restAAC.aac"
 
 
-cat ${wkdir}/aac.list | tail -n +13 | head -n 100 | while read line; do sudo wget --no-verbose -nc -P ${wkdir}/aac "$line"; done
+if [ $# -lt 1 ]; then
+  echo "usage : use this script via [timefreeParent.sh]"
+  echo "ex -> timefreeParent.sh channel_name fromtime totime"
+  exit 1
+fi
 
-	fixed_cont_string=""
-	ls ${wkdir}/aac/* | tail -n +13 | head -n 100 > ${wkdir}/contlist.txt
-	#sudo rm ${wkdir}/contlist.txt
+
+
+cat ${wholeAAC} | tail -n +13 | head -n 100 | while read line; do wget --no-verbose -nc -P ${tmpDirPath} "$line"; done
+
+	fixed_second_string=""
+	ls ${tmpDirPath}/* | tail -n +13 | head -n 100 > ${secondAAC}
 	while read line;
 		do 
-			fixed_cont_string="${fixed_cont_string}"" -cat ""$line"
-	done < ${wkdir}/contlist.txt
-	echo $fixed_cont_string
-	sudo MP4Box -sbr ${fixed_cont_string} -new ${wkdir}/boxaac/cont.aac 
+			fixed_second_string="${fixed_second_string}"" -cat ""$line"
+	done < ${secondAAC}
+
+	MP4Box -sbr ${fixed_second_string} -new ${secondAACfile}
 
 
-cat ${wkdir}/aac.list | tail -n +113 | while read line; do sudo wget --no-verbose -nc -P ${wkdir}/aac "$line"; done
+cat ${wholeAAC} | tail -n +113 | while read line; do wget --no-verbose -nc -P ${tmpDirPath} "$line"; done
 
 	fixed_rest_string=""
-
-	ls ${wkdir}/aac/* | tail -n +113 > ${wkdir}/restlist.txt
-	#sudo rm ${wkdir}/restlist.txt
+	ls ${tmpDirPath}/* | tail -n +113 > ${restAAC}
 	while read line;
 		do 
 			fixed_rest_string="${fixed_rest_string}"" -cat ""$line"
-	done < ${wkdir}/restlist.txt
-	echo $fixed_rest_string
-	sudo MP4Box -sbr ${fixed_rest_string} -new ${wkdir}/boxaac/rest.aac 
+	done < ${restAAC}
 
+	MP4Box -sbr ${fixed_rest_string} -new ${restAACfile}
 
-echo "all_fin"
