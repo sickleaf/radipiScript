@@ -26,11 +26,10 @@ if [ "$2" = '' ]; then
 	number=$defaultNumber;
 fi
 
-fileList=$(find ${resourcePath} -type f -name ${namePattern} | shuf | head -$(expr ${number}));
+fileList=$(find ${resourcePath} -type f -name ${namePattern} | shuf | head -$(expr ${number}) );
 
-for ((i = 0; i < ${#fileList[@]}; i++))
+echo "$fileList" | while read fileName
 do
-	fileName=${fileList[$i]}
 	echo "$fileName"
 	${player} ${option} "${fileName}";
 done;
