@@ -28,7 +28,10 @@ fi
 
 fileList=$(find ${resourcePath} -type f -name ${namePattern} | shuf | head -$(expr ${number}));
 
-for fileName in ${fileList}
+for ((i = 0; i < ${#fileList[@]}; i++))
 do
-	${player} ${option} ${fileName};
+	fileName=${fileList[$i]}
+	echo "$fileName"
+	${player} ${option} "${fileName}";
 done;
+
