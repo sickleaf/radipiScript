@@ -178,6 +178,12 @@ play() {
         --live \
         --stop ${duration} | \
         mpv - --quiet
+    if [ $? != 0 ]; then
+	    echo ""
+	    echo "##################### play failed. ######################"
+	    echo "#  !!! check mail address info in <loginInfo.sh> !!! "
+	    echo "#######################################################"
+    fi
 }
 
 # Get Option
