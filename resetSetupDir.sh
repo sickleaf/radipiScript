@@ -9,7 +9,7 @@ BACKUPDATE=$(date +%Y%m%d)
 # NAME
 
 # script dirname in radipiScript.git (default="script") 
-BASESCRIPTNAME=script;
+BASESCRIPTNAME=script
 
 # script name in local environment 
 
@@ -44,6 +44,9 @@ BACKUPDIR=/home/${RADIPIUSER}/${BACKUPBASENAME}/${BACKUPDIRNAME}
 ROOTPATH=$(cd $(dirname $0); pwd);
 BASEDIRFULLPATH=$(cd ${BASEDIR}; pwd);
 
+echo "######################################";
+echo "<< resetScriptDir.sh>> setup START.";
+echo "######################################";
 
 ################################################
 # [mkdir] BACKUPBASEDIR
@@ -74,4 +77,6 @@ if [ $? -eq 0 ]; then
 	echo "[remove directory] ${SCRIPTDIR}";
 fi
 
-echo "<< resetSetupDir.sh>> setup finished.";
+echo "######################################";
+echo "<< resetSetupDir.sh>> setup COMPLETE.";
+echo "######################################";
