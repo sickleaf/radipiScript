@@ -13,7 +13,7 @@ BASESCRIPTNAME=script
 
 # script name in local environment 
 
-# BACKUPDATE = Script20180708
+# BACKUPDIRNAME = Script20180708
 
 SCRIPTNAME=Script
 BACKUPBASENAME=Backup

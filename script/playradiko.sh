@@ -14,7 +14,7 @@ nhkplayerurl="$nhkurl/files/swf/rtmpe.swf"
 rtmpepath="${wkdir}"
 
 scriptDir=$(cd $(dirname $0); pwd);
-keyDir="/home/radipi/xem"
+keyDir="/home/radipi/radikoInfo"
 
 mail=$(cat ${scriptDir}/loginInfo.sh | grep mail | cut -d "=" -f 2)
 pass=$(sh ${scriptDir}/loginInfo.sh ${keyDir})
