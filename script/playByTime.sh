@@ -12,7 +12,7 @@ timetablePATH=${scriptBASEPATH}/${configName}/${timetableName}
 playradikoPATH=${scriptBASEPATH}/${playradikoName}
 
 
-nowDate=$(LANG=C;echo $(date '+%a:%H:%M:%S') )
+nowDate=$(LC_ALL="" LC_TIME=C date '+%a:%H:%M:%S' )
 weekDay=$(echo $nowDate | cut -d ":" -f 1)
 nowTime=$(echo $nowDate | cut -d ":" -f 2-3)
 
