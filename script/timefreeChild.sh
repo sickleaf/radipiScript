@@ -1,18 +1,27 @@
-#!/bin/sh
+#!/bin/bash
 
-dirPath=$1
+scriptDir=$(cd $(dirname $0); pwd);
+cd ${scriptDir}
+
+configScript=config.sh
+. ./${configScript}
+
+functionScript=function.sh
+. ./${functionScript}
+
+
+dirPath="$1"
 tmpDirPath=${dirPath}/tmp
 
-wholeAAC="${dirPath}/wholeAAC.txt"
 
-firstAAC="${dirPath}/firstAAC.txt"
-secondAAC="${dirPath}/secondAAC.txt"
-restAAC="${dirPath}/restAAC.txt"
+wholeAACList=${dirPath}/${wholeName}.txt
+echo $wholeAACList
 
-firstAACfile="${dirPath}/firstAAC.aac"
-secondAACfile="${dirPath}/secondAAC.aac"
-restAACfile="${dirPath}/restAAC.aac"
+secondAACList=${dirPath}/${secondName}.txt
+secondAACFile=${dirPath}/${secondName}.aac
 
+restAACList=${dirPath}/${restName}.txt
+restAACFile=${dirPath}/${restName}.aac
 
 if [ $# -lt 1 ]; then
   echo "usage : use this script via [timefreeParent.sh]"
@@ -22,26 +31,26 @@ fi
 
 
 
-cat ${wholeAAC} | tail -n +13 | head -n 100 | while read line; do wget --no-verbose -nc -P ${tmpDirPath} "$line"; done
+cat ${wholeAACList} | tail -n +13 | head -n 100 | while read line; do wget --no-verbose -nc -P ${tmpDirPath} "$line"; done
 
 	fixed_second_string=""
-	ls ${tmpDirPath}/* | tail -n +13 | head -n 100 > ${secondAAC}
+	ls ${tmpDirPath}/* | tail -n +13 | head -n 100 > ${secondAACList}
 	while read line;
 		do 
 			fixed_second_string="${fixed_second_string}"" -cat ""$line"
-	done < ${secondAAC}
+	done < ${secondAACList}
 
-	MP4Box -sbr ${fixed_second_string} -new ${secondAACfile}
+	MP4Box -sbr ${fixed_second_string} -new ${secondAACFile}
 
 
-cat ${wholeAAC} | tail -n +113 | while read line; do wget --no-verbose -nc -P ${tmpDirPath} "$line"; done
+cat ${wholeAACList} | tail -n +113 | while read line; do wget --no-verbose -nc -P ${tmpDirPath} "$line"; done
 
 	fixed_rest_string=""
-	ls ${tmpDirPath}/* | tail -n +113 > ${restAAC}
+	ls ${tmpDirPath}/* | tail -n +113 > ${restAACList}
 	while read line;
 		do 
 			fixed_rest_string="${fixed_rest_string}"" -cat ""$line"
-	done < ${restAAC}
+	done < ${restAACList}
 
-	MP4Box -sbr ${fixed_rest_string} -new ${restAACfile}
+	MP4Box -sbr ${fixed_rest_string} -new ${restAACFile}
 

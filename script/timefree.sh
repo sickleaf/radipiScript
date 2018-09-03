@@ -3,29 +3,33 @@
 # 20161120 modified by mapi
 # 20170514 modified by sickleaf
 # 20170918 modified by sickleaf
-
-scriptName="Script"
-radioName="Radio"
-childScriptName="timefreeChild.sh"
-
-homedir="/home/radipi"
-keydir="/home/radipi/xem"
-wkdir="${homedir}/${radioName}"
+# 20180902 modified by sickleaf
 
 scriptDir=$(cd $(dirname $0); pwd);
+cd ${scriptDir}
 
-childScriptPath="${scriptDir}/${childScriptName}"
+configScript=config.sh
+functionScript=function.sh
 
-mpvSocket=/tmp/mpv.socket
-option="--no-video --msg-level=all=info --idle=no --input-ipc-server=${mpvSocket}"
+. ./${configScript}
+. ./${functionScript}
 
-mail=$(cat ${scriptDir}/loginInfo.sh | grep mail | cut -d "=" -f 2)
-pass=$(sh ${scriptDir}/loginInfo.sh ${keydir})
+radioDir=`configGrep radioDir`
+
+secretKey=`concatPath ${keyDir} ${secretKeyName}`
+cipherText=`concatPath ${keyDir} ${cipherTextName}`
+pass=`decryptPass ${secretKey} ${cipherText}`
 
 
-if [ ! -d $wkdir ]; then
-	mkdir -p $wkdir
-	echo "[make directory]:$wkdir"
+childScriptPath=`concatPath ${scriptDir} ${childScriptName}`
+
+
+mpvOption="--no-video --msg-level=all=info --idle=no --input-ipc-server=${mpvSocket}"
+
+
+if [ ! -d $radioDir ]; then
+	mkdir -p $radioDir
+	echo "[make directory]:$radioDir"
 fi
 
 
@@ -36,7 +40,7 @@ if [ $# -eq 3 ]; then
 	totime=$3
 
 	dirName="${fromtime}_${channel}"
-	dirPath="${wkdir}/${dirName}"
+	dirPath="${radioDir}/${dirName}"
 	tmpDirPath="${dirPath}/tmp"
 
 	mkdir -m 777 ${dirPath}
@@ -46,16 +50,16 @@ else
   exit 1
 fi
 
-auth1_fms="${wkdir}/free_${channel}.auth1_fms"
-auth2_fms="${wkdir}/free_${channel}.auth2_fms"
+auth1_fms="${radioDir}/free_${channel}.auth1_fms"
+auth2_fms="${radioDir}/free_${channel}.auth2_fms"
 
-loginfile="${wkdir}/login"
-cookiefile=${wkdir}/cookie.txt
-playerfile=${wkdir}/player.swf
-keyfile=${wkdir}/authkey.png
+loginfile="${radioDir}/login"
+cookiefile=${radioDir}/cookie.txt
+playerfile=${radioDir}/player.swf
+keyfile=${radioDir}/authkey.png
 
-baseinput="${wkdir}/baseinput.m3u8"
-grepinput="${wkdir}/grepinput.m3u8"
+baseinput="${dirPath}/baseinput.m3u8"
+grepinput="${dirPath}/grepinput.m3u8"
 
 wholeAAC="${dirPath}/wholeAAC.txt"
 
@@ -66,9 +70,6 @@ restAAC="${dirPath}/restAAC.txt"
 firstAACfile="${dirPath}/firstAAC.aac"
 secondAACfile="${dirPath}/secondAAC.aac"
 restAACfile="${dirPath}/restAAC.aac"
-
-
-playerurl=http://radiko.jp/apps/js/flash/myplayer-release.swf
 
 #------------------------------------------------------------
 #------------------------------------------------------------
@@ -237,10 +238,10 @@ sh -c "grep radiko ${grepinput} > ${wholeAAC}"
 
 
 	if [ $? = 0 ]; then
-		mpv ${option} ${firstAACfile}  && mpv  ${option} ${secondAACfile} && mpv  ${option} ${restAACfile} 
+		mpv ${mpvOption} ${firstAACfile}  && mpv  ${mpvOption} ${secondAACfile} && mpv  ${mpvOption} ${restAACfile} 
 
 	else
-		mpv ${option} ${firstAACfile}
+		mpv ${mpvOption} ${firstAACfile}
 	fi
 
 	rm -r ${baseinput} ${grepinput}
