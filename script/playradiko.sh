@@ -1,26 +1,36 @@
 #!/bin/bash
 pid=$$
-wkdir='/var/tmp'
-playerurl=http://radiko.jp/apps/js/flash/myplayer-release.swf
-playerfile="${wkdir}/player.swf"
-keyfile="${wkdir}/authkey.png"
-auth1_fms="${wkdir}/auth1_fms"
-auth2_fms="${wkdir}/auth2_fms"
-date=`date +%Y%m%d_%H%M`
-stream_url=""
-url_parts=""
-nhkurl="http://www3.nhk.or.jp/netradio"
-nhkplayerurl="$nhkurl/files/swf/rtmpe.swf"
-rtmpepath="${wkdir}"
 
 scriptDir=$(cd $(dirname $0); pwd);
-keyDir="/home/radipi/radikoInfo"
+cd ${scriptDir}
 
-mail=$(cat ${scriptDir}/loginInfo.sh | grep mail | cut -d "=" -f 2)
-pass=$(sh ${scriptDir}/loginInfo.sh ${keyDir})
+configScript=config.sh
+functionScript=function.sh
 
-cookiefile="${wkdir}/cookie.txt"
-loginfile="${wkdir}/login"
+. ./${configScript}
+. ./${functionScript}
+
+workDir=`configGrep workDir`
+
+cookieFile=`concatPath ${workDir} ${cookieFileName}`
+loginFile=`concatPath ${workDir} ${loginFileName}`
+playerfile=`concatPath ${workDir} ${playerfileName}`
+authkeyfile=`concatPath ${workDir} ${authkeyfileName}`
+auth1_fms=`concatPath ${workDir} ${auth1_fmsName}`
+auth2_fms=`concatPath ${workDir} ${auth2_fmsName}`
+
+stream_url=""
+url_parts=""
+
+playerurl=`configGrep playerurl`
+
+
+keyDir=`configGrep keyDir`
+
+secretKey=`concatPath ${keyDir} ${secretKeyName}`
+cipherText=`concatPath ${keyDir} ${cipherTextName}`
+pass=`decryptPass ${secretKey} ${cipherText}`
+
 
 
 # Usage
@@ -49,15 +59,15 @@ show_usage() {
 ###
 if [ $mail ]; then
 
-    rm -f ${cookiefile}
-    rm -f ${loginfile}
+    rm -f ${cookieFile}
+    rm -f ${loginFile}
 
-  wget -q --save-cookie=$cookiefile \
+  wget -q --save-cookie=$cookieFile \
        --keep-session-cookies \
        --post-data="mail=$mail&pass=$pass" \
-       -O $loginfile \
+       -O $loginFile \
        https://radiko.jp/ap/member/login/login
-  if [ ! -f $cookiefile ]; then
+  if [ ! -f $cookieFile ]; then
     echo "failed login"
     exit 1
   fi
@@ -68,7 +78,7 @@ authorize() {
     #
     # delete previous setting file
     #
-    rm -f ${keyfile} 
+    rm -f ${authkeyfile} 
     rm -f ${auth1_fms}
     rm -f ${auth2_fms}
 
@@ -84,10 +94,10 @@ authorize() {
     #
     # get keydata (need swftool)
     #
-    if [ ! -f ${keyfile} ]; then
-        swfextract -b 12 ${playerfile} -o ${keyfile}
-        if [ ! -f ${keyfile} ]; then
-            echo "[stop] failed get keydata (${keyfile})" 1>&2 ; exit 1
+    if [ ! -f ${authkeyfile} ]; then
+        swfextract -b 12 ${playerfile} -o ${authkeyfile}
+        if [ ! -f ${authkeyfile} ]; then
+            echo "[stop] failed get keydata (${authkeyfile})" 1>&2 ; exit 1
         fi
     fi
     #
@@ -101,7 +111,7 @@ authorize() {
         --header="X-Radiko-Device: pc" \
         --post-data='\r\n' \
         --no-check-certificate \
-        --load-cookies $cookiefile \
+        --load-cookies $cookieFile \
         --save-headers \
         -O ${auth1_fms} \
         https://radiko.jp/v2/api/auth1_fms
@@ -114,7 +124,7 @@ authorize() {
     authtoken=`perl -ne 'print $1 if(/x-radiko-authtoken: ([\w-]+)/i)' ${auth1_fms}`
     offset=`perl -ne 'print $1 if(/x-radiko-keyoffset: (\d+)/i)' ${auth1_fms}`
     length=`perl -ne 'print $1 if(/x-radiko-keylength: (\d+)/i)' ${auth1_fms}`
-    partialkey=`dd if=${keyfile} bs=1 skip=${offset} count=${length} 2> /dev/null | base64`
+    partialkey=`dd if=${authkeyfile} bs=1 skip=${offset} count=${length} 2> /dev/null | base64`
     #echo "authtoken: ${authtoken} 1>&2
     #echo "offset: ${offset} 1>&2
     #echo "length: ${length} 1>&2
@@ -134,7 +144,7 @@ authorize() {
         --header="X-Radiko-Partialkey: ${partialkey}" \
         --post-data='\r\n' \
         --no-check-certificate \
-        --load-cookies $cookiefile \
+        --load-cookies $cookieFile \
         -O ${auth2_fms} \
         https://radiko.jp/v2/api/auth2_fms
     if [ $? -ne 0 -o ! -f ${auth2_fms} ]; then
@@ -148,7 +158,7 @@ authorize() {
     # get stream-url
     #
     wget -q \
-	--load-cookies $cookiefile \
+	--load-cookies $cookieFile \
 	--no-check-certificate \
 	-O ${ch_xml} \
         "https://radiko.jp/v2/station/stream/${channel}.xml"
@@ -180,9 +190,9 @@ play() {
         mpv - --quiet
     if [ $? != 0 ]; then
 	    echo ""
-	    echo "##################### play failed. ######################"
-	    echo "#  !!! check mail address info in <loginInfo.sh> !!! "
-	    echo "#######################################################"
+#	    echo "##################### play failed. ######################"
+#	    echo "#  !!! check mail address info in <loginInfo.sh> !!! "
+#	    echo "#######################################################"
     fi
 }
 
@@ -221,5 +231,5 @@ channel=$1
 duration=`expr ${VALUE_t:=0} \* 60`
 
 echo $channel
-ch_xml="${wkdir}/${channel}${pid}.xml"
+ch_xml="${workDir}/${channel}${pid}.xml"
 authorize && play
