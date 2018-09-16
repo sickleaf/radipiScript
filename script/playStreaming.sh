@@ -12,8 +12,6 @@ fi
 # NAME
 
 SCRIPTNAME=Script;
-BROWSERSCRIPTNAME=browserScript;
-BASESCRIPTNAME=script;
 
 CONFIGNAME=config;
 CSVFILENAME=streamingList.csv;

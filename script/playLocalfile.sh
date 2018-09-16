@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#$1	resourcePath(absolute path)
+#$1	dirID	
 #$2	number
 
 if [ $# -lt 1 ]; then
@@ -11,6 +11,28 @@ if [ $# -lt 1 ]; then
 	exit 1
 fi
 
+# NAME
+
+SCRIPTNAME=Script;
+
+CONFIGNAME=config;
+CSVFILENAME=dirList.csv;
+
+# USER
+
+RADIPIUSER=radipi;
+
+# DIR
+
+SCRIPTPATH=/home/${RADIPIUSER}/${SCRIPTNAME}
+
+# DIR
+
+CONFIGDIR=${SCRIPTPATH}/${CONFIGNAME}
+
+dirCSVPath=${CONFIGDIR}/${CSVFILENAME}
+
+dirID=$1
 
 extention="mp3"
 defaultNumber=100;
@@ -18,13 +40,24 @@ player=mpv
 mpvSocket=/tmp/mpv.socket
 option="--no-video --msg-level=all=info --idle=no --input-ipc-server=${mpvSocket}"
 
-resourcePath="$1"
+
+resourcePath="";
+resourcePath=$(cat ${dirCSVPath} | grep "${dirID}," | cut -d, -f 3);
+
+if [ resourcePath = "" ];then
+	echo "ID ${dirID} doesn't matched. check ${dirCSVPath}";
+	exit 1
+fi
+
 number="$2"
 namePattern="*."${extention}
 
 if [ "$2" = '' ]; then 
 	number=$defaultNumber;
 fi
+
+echo "play ${number} files."
+echo "[if you want to stop playing, press Ctrl + C ]"
 
 fileList=$(find ${resourcePath} -type f -name ${namePattern} | shuf | head -$(expr ${number}) );
 
