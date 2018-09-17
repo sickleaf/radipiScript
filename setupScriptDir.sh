@@ -66,23 +66,6 @@ do
 	fi
 done;
 
-#################################################
-# [mkdir] BROWSERSCRIPTDIR
-#################################################
-
-mkdir -p ${BROWSERSCRIPTDIR};
-if [ $? -eq 0 ]; then
-	echo "[make directory] ${BROWSERSCRIPTDIR}";
-fi
-
-################################################
-# [cp]scripts in SCRIPTDIR into BROWSERSCRIPTDIR
-################################################
-
-cp ${SCRIPTDIR}/*.sh ${BROWSERSCRIPTDIR};
-if [ $? -eq 0 ]; then
-	echo "[copy script] ${BROWSERSCRIPTDIR}/*.sh -> ${BROWSERSCRIPTDIR}/*.sh";
-fi
 
 ################################################
 # [chmod]add permission(execute) into scripts in SCRIPTDIR
