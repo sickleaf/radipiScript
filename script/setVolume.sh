@@ -38,7 +38,7 @@ if [ ${bluetoothFlg} -eq 1 ]; then
 	daemonOption=" -D  bluealsa "
 	unit="%"
 else
-	target="PCM"
+	target="Master"
 	daemonOption=""
 	unit="dB"
 fi
