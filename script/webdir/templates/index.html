@@ -15,9 +15,13 @@ $( function() {
 
 		var val=$(this).val();
 		var setval=eval(val);
+
+		if( $(this).hasClass("input")){
+			var kyd=$('#keyword').val();
+			var urlData=setval+"&keyword="+kyd;
 			$.ajax( {
 				type: "GET",
-				url: setval,
+				url: urlData,
 				success: function( data ) {
 					var dt = data;
 					$( '#status' ).html(dt);
@@ -26,8 +30,22 @@ $( function() {
 					$( '#status' ).text("[ERROR]");
 				}
 			} );
+	
+		}else{
+			$.ajax( {
+				type: "GET",
+				url: setval,
+				success: function( data ) {
+					var dt = data;
+					$( '#status' ).text(dt);
+				},
+				error: function( data ) {
+					$( '#status' ).text("[ERROR]");
+				}
+			} );
 		}
-	);
+
+	});
 } );
 
 
@@ -38,17 +56,35 @@ $( function() {
 
 <body>
         <div>
-        <p id="buttonMessage">loaded!</p>
+		<p id="buttonMessage">loaded!</p> <input id="keyword">
         <div class="grid-base container3">
 	        <button id="random" class="grid-item h5" value="Radipi.radikoRandom">radikoRandom</button>
 	        <button id="toggle" class="grid-item h5" value="Radipi.toggle">Stop/Restart</button>
 	        <button id="quit" class="grid-item h5" value="Radipi.quit">Quit</button>
         </div>
         
-        <div class="grid-base container2">
+        <div class="grid-base container4">
 	        <button id="soundminus" class="grid-item h5" value="Radipi.voldown">volume[-]</button>
+	        <button id="soundminus" class="grid-item h5" value="Radipi.speeddown">speed-0.1x</button>
+	        <button id="soundplus" class="grid-item h5" value="Radipi.speedup">speed+0.1x</button>
 	        <button id="soundplus" class="grid-item h5" value="Radipi.volup">volume[+]</button>
         </div>
+        
+        <div class="grid-base container2">
+	        <button id="menu" class="grid-item h5" value="Radipi.menu">menu(lightoff)</button>
+	        <button id="program" class="grid-item h5" value="Radipi.program">program(lighton)</button>
+        </div>
+
+        <div class="grid-base container2">
+	        <button id="menu" class="grid-item h5 input" value="Radipi.mntKeyword2021">rec2021(latest)</button>
+	        <button id="program" class="grid-item h5 input" value="Radipi.mntView2021">rec2021(viewOnly)</button>
+        </div>
+
+        <div class="grid-base container2">
+	        <button id="menu" class="grid-item h5 input" value="Radipi.mntKeyword2020">rec2020(latest)</button>
+	        <button id="program" class="grid-item h5 input" value="Radipi.mntView2020">rec2020(viewOnly)</button>
+        </div>
+
 
         <div class="grid-base container4">
 	        <button id="back10p" class="grid-item h10" value="Radipi.back10p">-10%</button>
