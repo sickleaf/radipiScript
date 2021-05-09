@@ -2,6 +2,7 @@ from flask import Flask,render_template,request
 from datetime import datetime
 import subprocess
 import json
+import sys
 
 app = Flask(__name__)
 
@@ -23,14 +24,28 @@ def getAudio():
     mess=o.decode().strip()
     return str(mess)
 
+@app.route('/speed')
+def speed():
+    prm=request.args.get("param")
+    if prm == "up":
+        cmd="bash -cvx 'speed=$(bash /home/radipi/Script/mpvSocket.sh /tmp/remocon.socket get_property \\\"speed\\\" | sed \'s/,.*//g\' | cut -d: -f2 | tail -1);speed=$(echo $speed+0.1 | bc | sed \'s/^/0/g\');/home/radipi/Script/mpvSocket.sh /tmp/remocon.socket speed ${speed} 0'"
+    else:
+        cmd="bash -cvx 'speed=$(bash /home/radipi/Script/mpvSocket.sh /tmp/remocon.socket get_property \\\"speed\\\" | sed \'s/,.*//g\' | cut -d: -f2 | tail -1);speed=$(echo $speed-0.1 | bc | sed \'s/^/0/g\');/home/radipi/Script/mpvSocket.sh /tmp/remocon.socket speed ${speed} 0'"
+    print(cmd)
+    o = subprocess.Popen(cmd,shell=True,stdout=subprocess.PIPE).stdout
+    print(o)
+    return getAudio()
+
+
+
 
 @app.route('/command')
 def command():
     cmd=request.args.get("param")
     print(cmd)
-    o = subprocess.run(cmd,shell=True,stdout=subprocess.PIPE).stdout
-    mess=o.decode().strip().split('\n')
-    return str(mess)
+    o = subprocess.Popen(cmd,shell=True,stdout=subprocess.PIPE).stdout
+    print(o)
+    return getAudio()
 
 
 @app.route('/radiko')
@@ -51,7 +66,7 @@ def radiko():
 @app.route('/changevol')
 def changevol():
     volpara=request.args.get("param")
-    cmd="/home/radipi/Script/setVolume.sh "+volpara
+    cmd="bash /home/radipi/Script/setVolume.sh "+volpara
     print(cmd)
     o = subprocess.run(cmd,shell=True,stdout=subprocess.PIPE).stdout
     mess=o.decode().strip().split('\n')
@@ -64,10 +79,7 @@ def mpvSocket():
     print(cmd)
     o = subprocess.run(cmd,shell=True,stdout=subprocess.PIPE).stdout
 
-    cmd="/home/radipi/Script/getAudioInfo.sh"
-    o = subprocess.run(cmd,shell=True,stdout=subprocess.PIPE).stdout
-    mess=o.decode().strip()
-    return str(mess)
+    return getAudio()
 
 @app.route('/mpvSocketDelay')
 def mpvSocketDelay():
@@ -81,6 +93,36 @@ def mpvSocketDelay():
     mess=o.decode().strip()
     return str(mess)
 
+@app.route('/remocon')
+def remocon():
+    keyID=request.args.get("param")
+    cmd="cat /tmp/lircrc | grep " + keyID +" | sed -n 1p | cut -d# -f2- | bash"
+    print(cmd)
+    o = subprocess.run(cmd,shell=True,stdout=subprocess.PIPE).stdout
+    res=o.decode().strip()
+
+    return str(res)
+
+@app.route('/mntRadio')
+def mntRadio():
+    args=request.args.get("param")
+    kyd=request.args.get("keyword")
+    cmd="bash /home/radipi/Script/playLocalfile.sh "+args+" "+kyd
+    print(cmd)
+
+    # if number = 0, just list result. if not, stop & play
+    if " 0 " in args:
+        o = subprocess.run(cmd,shell=True,stdout=subprocess.PIPE).stdout
+        mess=o.decode().strip()
+        mess="<br />".join(mess.split("\n"))
+    else:
+        discard = stop();
+        o = subprocess.Popen(cmd,shell=True,stdout=subprocess.PIPE).stdout
+        cmd="sleep 2 && /home/radipi/Script/getAudioInfo.sh"
+        o = subprocess.run(cmd,shell=True,stdout=subprocess.PIPE).stdout
+        mess=o.decode().strip()
+
+    return str(mess)
 
 @app.route('/random')
 def random():
