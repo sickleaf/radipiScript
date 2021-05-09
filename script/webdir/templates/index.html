@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <link rel="stylesheet" href="/static/style.css" />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <title>radiberry pi</title>
+<script type="text/javascript">
+
+$( function() {
+	$( "button" ).click(function() {
+		$('#buttonMessage').text($(this).html());
+
+		var val=$(this).val();
+		var setval=eval(val);
+			$.ajax( {
+				type: "GET",
+				url: setval,
+				success: function( data ) {
+					var dt = data;
+					$( '#status' ).html(dt);
+				},
+				error: function( data ) {
+					$( '#status' ).text("[ERROR]");
+				}
+			} );
+		}
+	);
+} );
+
+
+</script>
+
+
+</head>
+
+<body>
+        <div>
+        <p id="buttonMessage">loaded!</p>
+        <div class="grid-base container3">
+	        <button id="random" class="grid-item h5" value="Radipi.radikoRandom">radikoRandom</button>
+	        <button id="toggle" class="grid-item h5" value="Radipi.toggle">Stop/Restart</button>
+	        <button id="quit" class="grid-item h5" value="Radipi.quit">Quit</button>
+        </div>
+        
+        <div class="grid-base container2">
+	        <button id="soundminus" class="grid-item h5" value="Radipi.voldown">volume[-]</button>
+	        <button id="soundplus" class="grid-item h5" value="Radipi.volup">volume[+]</button>
+        </div>
+
+        <div class="grid-base container4">
+	        <button id="back10p" class="grid-item h10" value="Radipi.back10p">-10%</button>
+	        <button id="back20sec" class="grid-item h10" value="Radipi.back20sec">-20sec</button>
+	        <button id="for20sec" class="grid-item h10" value="Radipi.for20sec">20sec</button>
+	        <button id="for10p" class="grid-item h10" value="Radipi.for10p">10%</button>
+        </div>
+
+        <div class="grid-base container3">
+	        <button id="backward" class="grid-item h10" value="Radipi.backward" >&lt;&lt;</button>
+	        <button id="getAudio" class="grid-item h10" value="Radipi.getAudio" >info</button>
+		<button id="forward" class="grid-item h10" value="Radipi.forward" >&gt;&gt;</button>
+        </div>
+
+	<br>
+        <p id="status">status shows here...</p>
+
+</body>
+
+<script type="text/javascript" src="/static/config.js"></script>
+
+</html>

@@ -1,0 +1,77 @@
+
+.grid-base{
+	display: grid;
+	background-color: rgba(232, 232, 232, 0.7);
+	grid-gap: 10px;
+	padding: 10px;
+}
+
+.container2{
+	grid-template-columns: auto auto;
+}
+
+.container3{
+	grid-template-columns: auto auto auto;
+}
+
+.container4{
+	grid-template-columns: auto auto auto auto;
+}
+
+
+@media screen and (max-height: 800px) {
+	.h5 .h10 .h20{
+		height: 20vh;
+	}
+}
+
+@media screen and (min-height: 800px) {
+	.h5{
+		height: 5vh;
+	}
+	.h10{
+		height: 10vh;
+	}
+	
+	.h20{
+		height: 20vh;
+	}
+}
+
+
+@media screen and (max-width: 540px) {
+
+/* https://www.esz.co.jp/blog/2847.html
+ */
+	.grid-item {
+		background-color: #27DF50;
+		color: white;
+		border: 0px solid rgba(0, 0, 0, 0);
+		padding: 10px;
+		font-size: 1em;
+		text-align: center;
+		display: grid;
+		place-items: center;
+		cursor: pointer;
+	}
+}
+	
+@media screen and (min-width: 540px){
+	.grid-item {
+		background-color: #27DF50;
+		color: white;
+		border: 0px solid rgba(0, 0, 0, 0);
+		padding: 10px;
+		font-size: 1.5em;
+		text-align: center;
+		display: grid;
+		place-items: center;
+		cursor: pointer;
+	}
+
+}
+
+.grid-item:hover {
+	background-color: #4CAF50;
+	color: black;
+}
