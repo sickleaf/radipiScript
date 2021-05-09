@@ -3,7 +3,7 @@
 type mpv > /dev/null
 
 if [ $? -ne 0 ]; then
-	echo 'mpv does not installed. run "apt-get install mpv"'
+	echo 'mpv does not installed. run "apt install mpv -y"'
 else
 	echo "mpv installed."
 fi
