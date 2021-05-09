@@ -20,6 +20,18 @@ Radipi.getAudio="/getAudio"
 Radipi.toggle="/command?param=echo 'cycle pause' | socat - /tmp/remocon.socket"
 Radipi.quit="/quit"
 
+Radipi.menu="/remocon?param=menu"
+Radipi.program="/remocon?param=program"
+
+Radipi.speedup="/speed?param=up"
+Radipi.speeddown="/speed?param=down"
+
+Radipi.mntKeyword2021="/mntRadio?param=/mnt/rec2021/ '' r "
+Radipi.mntView2021="/mntRadio?param=/mnt/rec2021/ 0 r "
+Radipi.mntKeyword2020="/mntRadio?param=/mnt/rec2020/ '' r "
+Radipi.mntView2020="/mntRadio?param=/mnt/rec2020/ 0 r "
+
+
 Radipi.backward="/mpvSocketDelay?param= seek '\"0\" ,\"absolute-percent\"'"
 Radipi.back10p="/mpvSocket?param= seek '\"-10\" ,\"relative-percent\"'"
 Radipi.back20sec="/mpvSocket?param= seek -20"
