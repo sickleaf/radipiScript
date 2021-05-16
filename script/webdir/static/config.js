@@ -13,12 +13,24 @@ Radipi.scriptPath = "/home/radipi/Script/";
 Radipi.volup="/changevol?param=4 %2B"
 Radipi.voldown="/changevol?param=4 -"
 
+Radipi.radiko="/radiko?param="
+Radipi.JOAKFM="/radiko?param=JOAK-FM"
+Radipi.HOUSOUDAIGAKU="/radiko?param=HOUSOU-DAIGAKU"
 Radipi.radikoRandom="/radiko?param=R"
+
+Radipi.radipiDrive="/mntRadio?param=/mnt/radipiDrive"
+Radipi.menu1="/mntRadio?param=/mnt/radipiDrive"
+Radipi.menu2="/mntRadio?param=/mnt/radipiDrive"
+Radipi.menu3="/mntRadio?param=/mnt/radipiDrive"
+Radipi.FMtuner="/fmtuner"
 
 Radipi.getAudio="/getAudio"
 
 Radipi.toggle="/command?param=echo 'cycle pause' | socat - /tmp/remocon.socket"
 Radipi.quit="/quit"
+
+Radipi.speedup="/speed?param=up"
+Radipi.speeddown="/speed?param=down"
 
 Radipi.backward="/mpvSocketDelay?param= seek '\"0\" ,\"absolute-percent\"'"
 Radipi.back10p="/mpvSocket?param= seek '\"-10\" ,\"relative-percent\"'"

@@ -15,9 +15,15 @@ $( function() {
 
 		var val=$(this).val();
 		var setval=eval(val);
+
+		if( $(this).hasClass("getParam") ){
+			var val=$('#value').val();
+			var num=$('#numbers').val();
+			var sort=$('#sort').val();
+			var urlData=setval+"&value="+val+"&sort="+sort+"&numbers="+num;
 			$.ajax( {
 				type: "GET",
-				url: setval,
+				url: urlData,
 				success: function( data ) {
 					var dt = data;
 					$( '#status' ).html(dt);
@@ -26,9 +32,24 @@ $( function() {
 					$( '#status' ).text("[ERROR]");
 				}
 			} );
+
+		}else{
+			$.ajax( {
+				type: "GET",
+				url: setval,
+				success: function( data ) {
+					var dt = data;
+					$( '#status' ).text(dt);
+				},
+				error: function( data ) {
+					$( '#status' ).text("[ERROR]");
+				}
+			} );
 		}
-	);
+
+	});
 } );
+
 
 
 </script>
@@ -37,16 +58,51 @@ $( function() {
 </head>
 
 <body>
+
         <div>
-        <p id="buttonMessage">loaded!</p>
+		<p id="buttonMessage">loaded!</p>
+			<label>value</label> <input id="value">
+			<label>number</label>
+				<select name="numbers" id="numbers">
+					<option value="0">0</option>
+					<option value="1">1</option>
+					<option value="3">3</option>
+					<option value="10">10</option>
+					<option value="30">30</option>
+				</select>
+			<label>sort</label>
+				<select name="sort" id="sort">
+					<option value="s">shuffle</option>
+					<option value="n">name order</option>
+					<option value="r">reverse order</option>
+				</select>
+
+
+
         <div class="grid-base container3">
-	        <button id="random" class="grid-item h5" value="Radipi.radikoRandom">radikoRandom</button>
-	        <button id="toggle" class="grid-item h5" value="Radipi.toggle">Stop/Restart</button>
+	        <button id="joakfm" class="grid-item h5" value="Radipi.JOAKFM">NHK-FM</button>
+	        <button id="joakfm" class="grid-item h5 getParam" value="Radipi.radiko">radiko(ID)</button>
+	        <button id="random" class="grid-item h5" value="Radipi.radikoRandom">radiko(random)</button>
+        </div>
+
+        <div class="grid-base container2">
+	        <button id="toggle" class="grid-item h5" value="Radipi.toggle">Stop/Play</button>
 	        <button id="quit" class="grid-item h5" value="Radipi.quit">Quit</button>
         </div>
-        
-        <div class="grid-base container2">
+
+        <div class="grid-base container3">
+		<!--
+	        <button id="mountusb" class="grid-item h5 getParam" value="Radipi.radipiDrive">playUSB</button>
+		-->
+		<button id="menu1" class="grid-item h5 getParam" value="Radipi.menu1">playUSB(1)</button>
+	        <button id="menu2" class="grid-item h5 getParam" value="Radipi.menu2">playUSB(2)</button>
+	        <button id="menu3" class="grid-item h5 getParam" value="Radipi.menu3">playUSB(3)</button>
+        </div>
+
+        <div class="grid-base container4">
 	        <button id="soundminus" class="grid-item h5" value="Radipi.voldown">volume[-]</button>
+	        <button id="soundminus" class="grid-item h5" value="Radipi.speeddown">speed-0.1x</button>
+	        <button id="soundplus" class="grid-item h5" value="Radipi.speedup">speed+0.1x</button>
 	        <button id="soundplus" class="grid-item h5" value="Radipi.volup">volume[+]</button>
         </div>
 
@@ -65,6 +121,8 @@ $( function() {
 
 	<br>
         <p id="status">status shows here...</p>
+
+
 
 </body>
 
