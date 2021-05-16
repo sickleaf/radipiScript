@@ -16,9 +16,12 @@ $( function() {
 		var val=$(this).val();
 		var setval=eval(val);
 
-		if( $(this).hasClass("input")){
-			var kyd=$('#keyword').val();
-			var urlData=setval+"&keyword="+kyd;
+		if( $(this).hasClass("getParam") ){
+			var val=$('#value').val();
+			var num=$('#numbers').val();
+			var sort=$('#sort').val();
+			var urlData=setval+"&value="+val+"&sort="+sort+"&numbers="+num;
+
 			$.ajax( {
 				type: "GET",
 				url: urlData,
@@ -56,13 +59,35 @@ $( function() {
 
 <body>
         <div>
-		<p id="buttonMessage">loaded!</p> <input id="keyword">
+		<p id="buttonMessage">loaded!</p>
+			<label>value</label> <input id="value"> 
+			<label>number</label>
+				<select name="numbers" id="numbers">
+					<option value="0">0</option>
+					<option value="1">1</option>
+					<option value="3">3</option>
+					<option value="10">10</option>
+					<option value="30">30</option>
+				</select>
+			<label>sort</label>
+				<select name="sort" id="sort">
+					<option value="s">shuffle</option>
+					<option value="n">name order</option>
+					<option value="r">reverse order</option>
+				</select>
+
         <div class="grid-base container3">
-	        <button id="random" class="grid-item h5" value="Radipi.radikoRandom">radikoRandom</button>
-	        <button id="toggle" class="grid-item h5" value="Radipi.toggle">Stop/Restart</button>
+	        <button id="joakfm" class="grid-item h5" value="Radipi.JOAKFM">NHK-FM</button>
+	        <button id="joakfm" class="grid-item h5 getParam" value="Radipi.radiko">radiko(ID)</button>
+	        <button id="random" class="grid-item h5" value="Radipi.radikoRandom">radiko(random)</button>
+        </div>
+
+        <div class="grid-base container2">
+	        <button id="toggle" class="grid-item h5" value="Radipi.toggle">Stop/Play</button>
 	        <button id="quit" class="grid-item h5" value="Radipi.quit">Quit</button>
         </div>
-        
+ 
+       
         <div class="grid-base container4">
 	        <button id="soundminus" class="grid-item h5" value="Radipi.voldown">volume[-]</button>
 	        <button id="soundminus" class="grid-item h5" value="Radipi.speeddown">speed-0.1x</button>
@@ -76,15 +101,9 @@ $( function() {
         </div>
 
         <div class="grid-base container2">
-	        <button id="menu" class="grid-item h5 input" value="Radipi.mntKeyword2021">rec2021(latest)</button>
-	        <button id="program" class="grid-item h5 input" value="Radipi.mntView2021">rec2021(viewOnly)</button>
+	        <button id="mnt2021" class="grid-item h5 input getParam" value="Radipi.mnt2021">rec2021</button>
+	        <button id="mnt2021" class="grid-item h5 input getParam" value="Radipi.mnt2020">rec2020</button>
         </div>
-
-        <div class="grid-base container2">
-	        <button id="menu" class="grid-item h5 input" value="Radipi.mntKeyword2020">rec2020(latest)</button>
-	        <button id="program" class="grid-item h5 input" value="Radipi.mntView2020">rec2020(viewOnly)</button>
-        </div>
-
 
         <div class="grid-base container4">
 	        <button id="back10p" class="grid-item h10" value="Radipi.back10p">-10%</button>

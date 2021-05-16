@@ -54,7 +54,13 @@ def radiko():
     subprocess.run(killcmd,shell=True,stdout=subprocess.PIPE).stdout
 
     station=request.args.get("param")
-    cmd="/home/radipi/Script/playradiko.sh "+station
+    val=request.args.get("value")
+
+    if not val:
+ 	   cmd="/home/radipi/Script/playradiko.sh "+station+" 2>&1"
+    else:
+ 	   cmd="/home/radipi/Script/playradiko.sh "+val+" 2>&1"
+
     print(cmd)
     o = subprocess.Popen(cmd,shell=True,stdout=subprocess.PIPE).stdout
 
@@ -105,13 +111,16 @@ def remocon():
 
 @app.route('/mntRadio')
 def mntRadio():
-    args=request.args.get("param")
-    kyd=request.args.get("keyword")
-    cmd="bash /home/radipi/Script/playLocalfile.sh "+args+" "+kyd
+    path=request.args.get("param")
+    val=request.args.get("value")
+    num=request.args.get("numbers")
+    sort=request.args.get("sort")
+
+    cmd="bash /home/radipi/Script/playLocalfile.sh "+path+" "+num+" "+sort+" "+val
     print(cmd)
 
     # if number = 0, just list result. if not, stop & play
-    if " 0 " in args:
+    if int(num) == 0:
         o = subprocess.run(cmd,shell=True,stdout=subprocess.PIPE).stdout
         mess=o.decode().strip()
         mess="<br />".join(mess.split("\n"))

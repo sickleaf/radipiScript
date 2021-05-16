@@ -13,6 +13,10 @@ Radipi.scriptPath = "/home/radipi/Script/";
 Radipi.volup="/changevol?param=4 %2B"
 Radipi.voldown="/changevol?param=4 -"
 
+Radipi.radiko="/radiko?param="
+Radipi.JOAKFM="/radiko?param=JOAK-FM"
+Radipi.HOUSOUDAIGAKU="/radiko?param=HOUSOU-DAIGAKU"
+
 Radipi.radikoRandom="/radiko?param=R"
 
 Radipi.getAudio="/getAudio"
@@ -26,11 +30,8 @@ Radipi.program="/remocon?param=program"
 Radipi.speedup="/speed?param=up"
 Radipi.speeddown="/speed?param=down"
 
-Radipi.mntKeyword2021="/mntRadio?param=/mnt/rec2021/ '' r "
-Radipi.mntView2021="/mntRadio?param=/mnt/rec2021/ 0 r "
-Radipi.mntKeyword2020="/mntRadio?param=/mnt/rec2020/ '' r "
-Radipi.mntView2020="/mntRadio?param=/mnt/rec2020/ 0 r "
-
+Radipi.mnt2021="/mntRadio?param=/mnt/rec2021/"
+Radipi.mnt2020="/mntRadio?param=/mnt/rec2020/"
 
 Radipi.backward="/mpvSocketDelay?param= seek '\"0\" ,\"absolute-percent\"'"
 Radipi.back10p="/mpvSocket?param= seek '\"-10\" ,\"relative-percent\"'"
