@@ -21,8 +21,9 @@
 
 @media screen and (max-height: 800px) {
 	.h5 .h10 .h20{
-		height: 20vh;
+		height: 7vh;
 	}
+
 }
 
 @media screen and (min-height: 800px) {
@@ -39,7 +40,7 @@
 }
 
 
-@media screen and (max-width: 540px) {
+@media screen and (max-width: 840px) {
 
 /* https://www.esz.co.jp/blog/2847.html
  */
@@ -47,16 +48,21 @@
 		background-color: #27DF50;
 		color: white;
 		border: 0px solid rgba(0, 0, 0, 0);
-		padding: 10px;
+		padding: 2px;
 		font-size: 1em;
 		text-align: center;
 		display: grid;
 		place-items: center;
 		cursor: pointer;
 	}
+	.grid-base{
+		grid-gap: 2px;
+		padding: 2px;
+	}
+
 }
 	
-@media screen and (min-width: 540px){
+@media screen and (min-width: 840px){
 	.grid-item {
 		background-color: #27DF50;
 		color: white;
@@ -71,6 +77,32 @@
 
 }
 
+@media screen and (max-height: 800px) {
+
+	.grid-item {
+		background-color: #27DF50;
+		color: white;
+		border: 0px solid rgba(0, 0, 0, 0);
+		padding: 2px;
+		font-size: 1em;
+		font-weight: bold;
+		text-align: center;
+		display: grid;
+		place-items: center;
+		cursor: pointer;
+	}
+
+	.container4 > button{
+		font-weight: normal;
+	}
+
+	.grid-base{
+		grid-gap: 2px;
+		padding: 2px;
+	}
+
+}
+	
 .grid-item:hover {
 	background-color: #4CAF50;
 	color: black;
