@@ -1,7 +1,8 @@
 #!/bin/sh
 
 ROOTPATH=$(cd $(dirname $0); pwd);
-streamingPath=/tmp/streamingList
+streamingTempPath=/tmp/streamingList
+streamingPath=/home/radipi/Script/streamingListAll
 
 funcScript=$(dirname ${ROOTPATH})/Script/mpvSocket.sh
 
@@ -30,9 +31,10 @@ if [ ! $mpvcheck -eq 0 -a "${grepMPV}" = "" ]; then
 	# radiko URL or streaming URL
 	url=$(ps aux | grep [m]pv | awk '$0=$NF')
 
-	grepMPV=$(echo $url | grep -f - ${streamingPath} | cut -d, -f1)
+	grepMPV=$(echo $url | grep -f - ${streamingPath} 2> /dev/null | cut -d, -f1)
+	grepTempMPV=$(echo $url | grep -f - ${streamingTempPath} 2> /dev/null | cut -d, -f1)
 
-	if [ "${grepMPV}"  = "" ]; then
+	if [ "${grepMPV}"  = "" -a "${grepTempMPV}" = "" ]; then
 
 		#radiko
 		grepMPV=$(ps aux | grep [m]pv | awk '$0=$NF' | cut -d/ -f4)
@@ -44,16 +46,17 @@ if [ ! $mpvcheck -eq 0 -a "${grepMPV}" = "" ]; then
 fi
 
 
-timepos=$(${funcScript} /tmp/remocon.socket get_property '"time-pos"' | grep -Eo "[0-9]+\." | sed "s;.$;;g")
-percent=$(${funcScript} /tmp/remocon.socket get_property '"percent-pos"' | grep -Eo "[0-9]+\..")
-remain=$(${funcScript} /tmp/remocon.socket get_property '"playtime-remaining"' | grep -Eo "[0-9]+\." | sed "s;.$;;g")
-duration=$(${funcScript} /tmp/remocon.socket get_property '"duration"' | grep -Eo "[0-9]+\." | sed "s;.$;;g")
+timepos=$(${funcScript} /tmp/remocon.socket get_property '"time-pos"' 2> /dev/null | grep -Eo "[0-9]+\." | sed "s;.$;;g")
+percent=$(${funcScript} /tmp/remocon.socket get_property '"percent-pos"'  2> /dev/null | grep -Eo "[0-9]+\..")
+remain=$(${funcScript} /tmp/remocon.socket get_property '"playtime-remaining"'  2> /dev/null | grep -Eo "[0-9]+\." | sed "s;.$;;g")
+duration=$(${funcScript} /tmp/remocon.socket get_property '"duration"'  2> /dev/null | grep -Eo "[0-9]+\." | sed "s;.$;;g")
 
 statusInfo=${percent}"%("${timepos}"sec/"${duration}"sec, last "${remain}"sec)"
 
 echo ${grepMPV}
 echo
-echo ${statusInfo}
+[ "${remain}" = "" ] || echo ${statusInfo}
+[ "${additionalInfo}" = "" ] || echo "${additionalInfo}"
 
 #msg=${msg}"playing:${grepMPV}\n${additionalInfo}\n"
 
