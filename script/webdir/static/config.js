@@ -9,14 +9,18 @@ Radipi.hMax = 24; // hour:00-23
 Radipi.mMax = 60;// min :00-59
 
 Radipi.scriptPath = "/home/radipi/Script/";
+Radipi.setList="/home/radipi/Script/streamingListBase"
 
 Radipi.volup="/changevol?param=4 %2B"
 Radipi.voldown="/changevol?param=4 -"
 
 Radipi.radiko="/radiko?param="
 Radipi.JOAKFM="/radiko?param=JOAK-FM"
-Radipi.HOUSOUDAIGAKU="/radiko?param=HOUSOU-DAIGAKU"
+Radipi.BBCWorld="/streaming?param=BBCWorld&setList=/home/radipi/Script/streamingListBase"
 Radipi.radikoRandom="/radiko?param=R"
+
+Radipi.playStreaming="/streaming?param="
+Radipi.randomStreaming="/streaming?param=R&setList=/home/radipi/Script/streamingListBase"
 
 Radipi.radipiDrive="/mntRadio?param=/mnt/radipiDrive"
 Radipi.menu1="/mntRadio?param=/mnt/radipiDrive"
