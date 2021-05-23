@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ $# -lt 1 ]; then
-	echo "<<usage>>"
+	echo "[usage]"
 	echo "specify frequency(MHz)"
 	exit 1
 fi
