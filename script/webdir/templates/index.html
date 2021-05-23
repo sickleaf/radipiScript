@@ -10,17 +10,34 @@
 <script type="text/javascript">
 
 $( function() {
+	var seturl="/setList?param="+Radipi.setList
+	$.ajax( {
+		type: "GET",
+		url: seturl,
+		success: function( data ) {
+			var dt = csv2json(data.split('\n'));
+			for(var i in dt){
+				$('#streamingID').append("<option value=" +dt[i].stationID +">"+ dt[i].stationName + "</option>");
+			}
+		},
+		error: function( data ) {
+			$( '#status' ).text("[ERROR]"+Radipi.setList+" not found.");
+		}
+
+	} );
+
 	$( "button" ).click(function() {
 		$('#buttonMessage').text($(this).html());
 
 		var val=$(this).val();
-		var setval=eval(val);
+		var setval=eval(val)
 
 		if( $(this).hasClass("getParam") ){
 			var val=$('#value').val();
-			var num=$('#numbers').val();
+			var num=$('input[name="numbers"]:checked').val();
+			var streamingID=$('#streamingID').val();
 			var sort=$('#sort').val();
-			var urlData=setval+"&value="+val+"&sort="+sort+"&numbers="+num;
+			var urlData=setval+"&value="+val+"&sort="+sort+"&numbers="+num+"&streamingID="+streamingID+"&setList="+Radipi.setList;
 			$.ajax( {
 				type: "GET",
 				url: urlData,
@@ -32,14 +49,14 @@ $( function() {
 					$( '#status' ).text("[ERROR]");
 				}
 			} );
-
+	
 		}else{
 			$.ajax( {
 				type: "GET",
 				url: setval,
 				success: function( data ) {
 					var dt = data;
-					$( '#status' ).text(dt);
+					$( '#status' ).html(dt);
 				},
 				error: function( data ) {
 					$( '#status' ).text("[ERROR]");
@@ -50,6 +67,25 @@ $( function() {
 	});
 } );
 
+function csv2json(csvCat){
+
+	var jsonCat = [];
+	
+	var items = csvCat[0].split(",");
+	
+	for (var i=1; i < csvCat.length; i++){
+		var newline = new Object();
+		var csvData = csvCat[i].split(",");
+		
+		for (var j=0; j < items.length; j++){
+			newline[items[j]] = csvData[j]
+		}
+
+		jsonCat.push(newline);
+	}
+
+	return jsonCat
+}
 
 
 </script>
@@ -61,35 +97,44 @@ $( function() {
 
         <div>
 		<p id="buttonMessage">loaded!</p>
-			<label>value</label> <input id="value">
-			<label>number</label>
-				<select name="numbers" id="numbers">
-					<option value="0">0</option>
-					<option value="1">1</option>
-					<option value="3">3</option>
-					<option value="10">10</option>
-					<option value="30">30</option>
-				</select>
-			<label>sort</label>
+			<label>keyword</label> <input id="value"> 
+
+			<label for="sort">sort</label>
 				<select name="sort" id="sort">
 					<option value="s">shuffle</option>
 					<option value="n">name order</option>
 					<option value="r">reverse order</option>
 				</select>
 
+			<label for="streamingID">list</label>
+				<select id="streamingID" name="streamingID">
+				</select>
 
 
-        <div class="grid-base container3">
-	        <button id="joakfm" class="grid-item h5" value="Radipi.JOAKFM">NHK-FM</button>
-	        <button id="joakfm" class="grid-item h5 getParam" value="Radipi.radiko">radiko(ID)</button>
+			<label>number</label>
+				<input type="radio" id="zero" name="numbers" value="0" checked><label for="zero">0</label>
+				<input type="radio" id="one" name="numbers" value="1"><label for="one">1</label>
+				<input type="radio" id="three" name="numbers" value="3"><label for="three">3</label>
+				<input type="radio" id="ten" name="numbers" value="10"><label for="ten">10</label>
+				<input type="radio" id="thirty" name="numbers" value="30"><label for="thirty">30</label>
+
+        <div class="grid-base container4">
+	        <button id="radiko" class="grid-item h5 getParam" value="Radipi.radiko">radiko(ID)</button>
 	        <button id="random" class="grid-item h5" value="Radipi.radikoRandom">radiko(random)</button>
+	        <button id="playStreaming" class="grid-item h5 getParam" value="Radipi.playStreaming">streaming(ID)</button>
+	        <button id="randomStreaming" class="grid-item h5" value="Radipi.randomStreaming">streaming(random)</button>
         </div>
 
+        <div class="grid-base container2">
+	        <button id="joakfm" class="grid-item h5" value="Radipi.JOAKFM">NHK-FM</button>
+	        <button id="joakfm" class="grid-item h5" value="Radipi.BBCWorld">BBCWorld</button>
+        </div>
+ 
         <div class="grid-base container2">
 	        <button id="toggle" class="grid-item h5" value="Radipi.toggle">Stop/Play</button>
 	        <button id="quit" class="grid-item h5" value="Radipi.quit">Quit</button>
         </div>
-
+ 
         <div class="grid-base container3">
 		<!--
 	        <button id="mountusb" class="grid-item h5 getParam" value="Radipi.radipiDrive">playUSB</button>
@@ -99,13 +144,14 @@ $( function() {
 	        <button id="menu3" class="grid-item h5 getParam" value="Radipi.menu3">playUSB(3)</button>
         </div>
 
+       
         <div class="grid-base container4">
 	        <button id="soundminus" class="grid-item h5" value="Radipi.voldown">volume[-]</button>
 	        <button id="soundminus" class="grid-item h5" value="Radipi.speeddown">speed-0.1x</button>
 	        <button id="soundplus" class="grid-item h5" value="Radipi.speedup">speed+0.1x</button>
 	        <button id="soundplus" class="grid-item h5" value="Radipi.volup">volume[+]</button>
         </div>
-
+        
         <div class="grid-base container4">
 	        <button id="back10p" class="grid-item h10" value="Radipi.back10p">-10%</button>
 	        <button id="back20sec" class="grid-item h10" value="Radipi.back20sec">-20sec</button>
