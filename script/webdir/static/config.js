@@ -26,7 +26,7 @@ Radipi.radipiDrive="/mntRadio?param=/mnt/radipiDrive"
 Radipi.menu1="/mntRadio?param=/mnt/radipiDrive"
 Radipi.menu2="/mntRadio?param=/mnt/radipiDrive"
 Radipi.menu3="/mntRadio?param=/mnt/radipiDrive"
-Radipi.FMtuner="/fmtuner"
+Radipi.FMtuner="/fmtuner?param=playFM.sh"
 
 Radipi.getAudio="/getAudio"
 

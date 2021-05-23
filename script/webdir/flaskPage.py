@@ -131,8 +131,23 @@ def mntRadio():
 
 @app.route('/fmtuner')
 def fmtuner():
+    scriptName=request.args.get("param")
+    freq=request.args.get("value")
+    num=request.args.get("numbers")
+    sort=request.args.get("sort")
+
+    if not freq:
+      cmd="/home/radipi/Script/" + scriptName
+      o = subprocess.run(cmd,shell=True,stdout=subprocess.PIPE).stdout
+      mess=o.decode().strip()
+      mess="<br />".join(mess.split("\n"))
+      return str(mess)
     
-    return "fmtuner"
+    else:
+      cmd="/home/radipi/Script/" + scriptName + " " + freq
+      o = subprocess.Popen(cmd,shell=True,stdout=subprocess.PIPE).stdout
+      return "fmtuner[" + freq + "]"
+
 
 @app.route('/changevol')
 def changevol():
