@@ -137,7 +137,6 @@ def fmtuner():
     sort=request.args.get("sort")
 
     if not freq:
-      discard = stop();
       cmd="/home/radipi/Script/" + scriptName
       o = subprocess.run(cmd,shell=True,stdout=subprocess.PIPE).stdout
       mess=o.decode().strip()
@@ -145,6 +144,7 @@ def fmtuner():
       return str(mess)
     
     else:
+      discard = stop();
       cmd="/home/radipi/Script/" + scriptName + " " + freq
       o = subprocess.Popen(cmd,shell=True,stdout=subprocess.PIPE).stdout
       return "fmtuner[" + freq + "]"
