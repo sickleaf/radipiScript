@@ -1,0 +1,44 @@
+stationID,stationName,url
+J1HITS,J1 HITS,https://jenny.torontocast.com:2000/stream/j1hits/stream
+J1XTRA,J1 XTRA,https://jenny.torontocast.com:2000/stream/j1xtra/stream
+J1GOLD,J1 GOLD,https://jenny.torontocast.com:2000/stream/j1gold/stream
+Jazz24,Jazz24,https://prod-35-230-27-165.wostreaming.net/ppm-jazz24aac256-ibc1
+WQXR,WQXR Classic,http://wnyc-wqxr-ice.streamguys.com:80/wqxr
+ABCFM,ABC Classic FM,http://live-radio01.mediahubaustralia.com/2FMW/mp3
+ABCClassic,ABC Classic 2,http://live-radio01.mediahubaustralia.com/FM2W/mp3
+CFM,Classic FM,http://media-ice.musicradio.com:80/ClassicFMMP3
+BBCR1,BBC Radio 1,http://open.live.bbc.co.uk/mediaselector/5/select/version/2.0/mediaset/http-icy-mp3-a/vpid/bbc_radio_one/format/pls.pls
+BBCAsia,BBC Radio Asian Network,http://open.live.bbc.co.uk/mediaselector/5/select/version/2.0/mediaset/http-icy-mp3-a/vpid/bbc_asian_network/format/pls.pls
+BBCWorld,BBC World Service,http://wsdownload.bbc.co.uk/worldservice/meta/live/shoutcast/mp3/eieuk.pls
+NHKR1,NHKR1,https://nhkradioakr1-i.akamaihd.net/hls/live/511633/1-r1/1-r1-01.m3u8
+NHKR2,NHKR2,https://nhkradioakr2-i.akamaihd.net/hls/live/511929/1-r2/1-r2-01.m3u8
+NHKFM,NHKFM,https://nhkradioakfm-i.akamaihd.net/hls/live/512290/1-fm/1-fm-01.m3u8
+WREP,WREP,http://139.99.4.28/
+AandG,超A&G+,https://fms2.uniqueradio.jp/agqr10/aandg1.m3u8
+touhou,touhouradio,http://touhouradio.com:8000/touhouradio.mp3
+BBCR2,BBC Radio 2,http://open.live.bbc.co.uk/mediaselector/5/select/version/2.0/mediaset/http-icy-mp3-a/vpid/bbc_radio_two/format/pls.pls
+BBCR3,BBC Radio 3,http://open.live.bbc.co.uk/mediaselector/5/select/version/2.0/mediaset/http-icy-mp3-a/vpid/bbc_radio_three/format/pls.pls
+BBCR4,BBC Radio 4,http://open.live.bbc.co.uk/mediaselector/5/select/version/2.0/mediaset/http-icy-mp3-a/vpid/bbc_radio_fourlw/format/pls.pls
+BBCR5,BBC Radio 5,http://open.live.bbc.co.uk/mediaselector/5/select/version/2.0/mediaset/http-icy-mp3-a/vpid/bbc_radio_five_live/format/pls.pls
+BBCR6,BBC Radio 6,http://open.live.bbc.co.uk/mediaselector/5/select/version/2.0/mediaset/http-icy-mp3-a/vpid/bbc_6music/format/pls.pls
+BBCR1E,BBC Radio 1 Extra,http://open.live.bbc.co.uk/mediaselector/5/select/version/2.0/mediaset/http-icy-mp3-a/vpid/bbc_1xtra/format/pls.pls
+BBCR4E,BBC Radio 4 Extra,http://open.live.bbc.co.uk/mediaselector/5/select/version/2.0/mediaset/http-icy-mp3-a/vpid/bbc_radio_four_extra/format/pls.pls
+BBCBristol,BBC Radio Bristol,http://stream.live.vc.bbcmedia.co.uk/bbc_radio_bristol
+BBCCambridge,BBC Radio Cambridgeshire,http://stream.live.vc.bbcmedia.co.uk/bbc_radio_cambridge
+BBCLondon,BBC Radio London,http://stream.live.vc.bbcmedia.co.uk/bbc_london
+BBCOxford,BBC Radio Oxford,http://stream.live.vc.bbcmedia.co.uk/bbc_radio_oxford
+Raute40,RauteMusik Top40,http://138.201.248.93:80/top40
+RauteHHC,RauteMusik Happy Hard Core,http://138.201.248.93:80/happyhardcore
+RauteMain,RauteMusik Main,http://138.201.248.93:80/main
+Raute90s,RauteMusik 90s,http://138.201.248.93:80/90s
+RautePiano,RauteMusik Solo Piano,http://138.201.248.93:80/solopiano
+RauteHarder,RauteMusik HardeR,http://138.201.248.93:80/harder
+RauteTrance,RauteMusik Trance,http://138.201.248.93:80/trance
+RauteClub,RauteMusik Club,http://138.201.248.93:80/club
+RauteGold,RauteMusik Goldies,http://138.201.248.93:80/goldies
+RTHKR3,RTHK R3,http://stm.rthk.hk/radio3
+RTHKR4,RTHK R4,http://stm.rthk.hk/radio4
+CAROLINE,Radio Caroline,http://sc3.radiocaroline.net:8030/listen.m3u
+FMkaratsu,FMからつ,https://musicbird-hls.leanstream.co/musicbird/JCB092.stream
+radioNanami,ラヂオななみ,https://musicbird-hls.leanstream.co/musicbird/JCB103.stream
+napasa,FM湘南ナパサ,https://musicbird-hls.leanstream.co/musicbird/JCB014.stream
