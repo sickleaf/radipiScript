@@ -9,6 +9,8 @@
         <title>radiberry pi</title>
 <script type="text/javascript">
 
+	var intervalCnt = new Array();
+
 $( function() {
 	var seturl="/setList?param="+Radipi.setList
 	$.ajax( {
@@ -33,9 +35,14 @@ $( function() {
 		var setval=eval(val)
 
 		if( $(this).hasClass("setChecker") ){
-			setInterval(getAudioInfo,Radipi.getAudioInterval);
+			if(intervalCnt.length > 0){
+				clearInterval(intervalCnt.shift());
+			}
+
+			intervalCnt.push(setInterval(getAudioInfo,Radipi.getAudioInterval));
+
 		}else{
-			clearInterval(getAudioInfo);
+			clearInterval(intervalCnt.shift());
 		}
 
 		if( $(this).hasClass("getParam") ){
