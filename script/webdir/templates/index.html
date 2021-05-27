@@ -34,15 +34,22 @@ $( function() {
 		var val=$(this).val();
 		var setval=eval(val)
 
-		if( $(this).hasClass("setChecker") ){
-			if(intervalCnt.length > 0){
-				clearInterval(intervalCnt.shift());
-			}
+		var checknum=$('input[name="numbers"]:checked').val();
 
-			intervalCnt.push(setInterval(getAudioInfo,Radipi.getAudioInterval));
-
-		}else{
+		if(intervalCnt.length > 0){
 			clearInterval(intervalCnt.shift());
+		}
+
+		if( $(this).hasClass("setCheckerWithout0")){
+			if(checknum!=0){
+				$(this).addClass("setChecker");
+			}else{
+				$(this).removeClass("setChecker");
+			}
+		}
+
+		if( $(this).hasClass("setChecker") ){
+			intervalCnt.push(setInterval(getAudioInfo,Radipi.getAudioInterval));
 		}
 
 		if( $(this).hasClass("getParam") ){
@@ -179,8 +186,8 @@ function getAudioInfo(){
         </div>
 
         <div class="grid-base container2">
-	        <button id="mnt2021" class="grid-item h5 input getParam" value="Radipi.mnt2021">rec2021</button>
-	        <button id="mnt2021" class="grid-item h5 input getParam" value="Radipi.mnt2020">rec2020</button>
+	        <button id="mnt2021" class="grid-item h5 input getParam setCheckerWithout0" value="Radipi.mnt2021">rec2021</button>
+	        <button id="mnt2021" class="grid-item h5 input getParam setCheckerWithout0" value="Radipi.mnt2020">rec2020</button>
         </div>
 
         <div class="grid-base container4">
