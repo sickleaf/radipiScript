@@ -9,6 +9,8 @@
         <title>radiberry pi</title>
 <script type="text/javascript">
 
+var intervalCnt = new Array();
+
 $( function() {
 	var seturl="/setList?param="+Radipi.setList
 	$.ajax( {
@@ -32,10 +34,22 @@ $( function() {
 		var val=$(this).val();
 		var setval=eval(val)
 
+		var checknum=$('input[name="numbers"]:checked').val();
+
+		if(intervalCnt.length > 0){
+			clearInterval(intervalCnt.shift());
+		}
+
+		if( $(this).hasClass("setCheckerWithout0")){
+			if(checknum!=0){
+				$(this).addClass("setChecker");
+			}else{
+				$(this).removeClass("setChecker");
+			}
+		}
+
 		if( $(this).hasClass("setChecker") ){
-			setInterval(getAudioInfo,Radipi.getAudioInterval);
-		}else{
-			clearInterval(getAudioInfo);
+			intervalCnt.push(setInterval(getAudioInfo,Radipi.getAudioInterval));
 		}
 
 		if( $(this).hasClass("getParam") ){
@@ -159,9 +173,9 @@ function getAudioInfo(){
  
         <div class="grid-base container4">
 	        <button id="fmtuner" class="grid-item h5 getParam" value="Radipi.FMtuner">playFM</button>
-		<button id="menu1" class="grid-item h5 getParam setChecker" value="Radipi.menu1">playUSB(1)</button>
-	        <button id="menu2" class="grid-item h5 getParam setChecker" value="Radipi.menu2">playUSB(2)</button>
-	        <button id="menu3" class="grid-item h5 getParam setChecker" value="Radipi.menu3">playUSB(3)</button>
+		<button id="menu1" class="grid-item h5 getParam setCheckerWithout0" value="Radipi.menu1">playUSB(1)</button>
+	        <button id="menu2" class="grid-item h5 getParam setCheckerWithout0" value="Radipi.menu2">playUSB(2)</button>
+	        <button id="menu3" class="grid-item h5 getParam setCheckerWithout0" value="Radipi.menu3">playUSB(3)</button>
         </div>
 
        
