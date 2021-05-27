@@ -184,6 +184,7 @@ def remocon():
         o = subprocess.run(cmd,shell=True,stdout=subprocess.PIPE).stdout
         res=o.decode().strip()
         mess="<br />".join(res.split("\n"))
+
         return str(mess)
 
     else:
@@ -191,6 +192,9 @@ def remocon():
         print(cmd)
         o = subprocess.Popen(cmd,shell=True,stdout=subprocess.PIPE).stdout
     
+        cmd="sleep 2"
+        o = subprocess.run(cmd,shell=True,stdout=subprocess.PIPE).stdout
+
         return getAudio()
 
 
