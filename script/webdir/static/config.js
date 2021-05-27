@@ -8,6 +8,8 @@ Radipi.Const = function(){};
 Radipi.hMax = 24; // hour:00-23
 Radipi.mMax = 60;// min :00-59
 
+Radipi.getAudioInterval=3000;
+
 Radipi.scriptPath = "/home/radipi/Script/";
 Radipi.setList="/home/radipi/Script/streamingListAll"
 
