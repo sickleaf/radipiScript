@@ -104,18 +104,22 @@ playRadiko(){
 	cookiefile=${3:-"cookie.txt"}
 	auth1=${4:-"auth1_fms"}
 	duration=${5:-"1000"}
-	mpvOption=${6:-" --no-video --msg-level=all=warn --idle=no "}
+	mpvOption=${6:-" --audio-buffer=3 --no-video --msg-level=all=warn --idle=no "}
 
 	playLength=$((duration*60))
 	mpvOption=${mpvOption}" --length="${playLength}
 
 	timefreeFlag=0; [ -f ${cookiefile} ] && [ -z $(find ${cookiefile} -cmin -1) ] && timefreeFlag=1
+	bluetoothaddr=$(hcitool con | grep -Eo "[0-9A-F:]{9,}")
+
+	[ "$(echo $bluetoothaddr)" = "" ] || mpvOption=${mpvOption}" --audio-device=alsa/bluealsa "
+
 
 	stream_url=$(curl -s https://radiko.jp/v2/station/stream_smh_multi/${stationID}.xml | grep -A2 areafree=\"${timefreeFlag}\" | grep -o http:[^\<]* | sed -n 1p)
 	
 	authtoken=$(cat ${auth1} | tr -d "\r" | grep -i "authtoken=" | cut -d= -f2)
 
-	mpv --http-header-fields="X-Radiko-AuthToken: ${authtoken}" ${mpvOption} ${stream_url}
+	mpv ${mpvOption} --http-header-fields="X-Radiko-AuthToken: ${authtoken}" ${stream_url}
 
 }
 
