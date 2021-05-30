@@ -157,7 +157,11 @@ def autoPlay():
     o = subprocess.Popen(cmd,shell=True,stdout=subprocess.PIPE).stdout
     cmd="echo autoPlay=" + mode + " | tee /home/radipi/Script/radioMode"
     o = subprocess.run(cmd,shell=True,stdout=subprocess.PIPE).stdout
-    return "autoPlay[" + mode + "]"
+    cmd="cat /tmp/sheet1 | grep Sun, | sort -t, -k3,3r | awk -v FS=',' -v nowTime=$(LC_ALL='' LC_TIME=C date '+%H:%M' ) 'nowTime <= $3 {print}' | tail -1 | sed 's;,,;;g; s;^;[NextInfo] ;g'"
+    o = subprocess.run(cmd,shell=True,stdout=subprocess.PIPE).stdout
+    mess=o.decode().strip()
+    mess="<br />".join(mess.split("\n"))
+    return str(mess)
 
 @app.route('/timetable')
 def timetable():
