@@ -1,0 +1,1 @@
+*/1 * * * * bash -c "[ \"$(cat /home/radipi/Script/radioMode)\" = \"autoPlay=on\" ] && [ \"$(ps aux | grep mpv | grep socket | grep -v grep)\" = \"\" ] && bash /home/radipi/Script/autoPlayByTime.sh /tmp/sheet1 true"
