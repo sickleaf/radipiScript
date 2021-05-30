@@ -1,31 +1,32 @@
 #!/bin/bash
 
 argsErrorHead='!!  args missing. present args=${#}, needed at least ${leastArgs} (functionName=$0})\n'
-argsMessage=" usage: <1*:streamingURLInfo> <2:streamingID(if missing, cat streamingURLInfo)> <3:duration(min)>"
+argsMessage=" usage: <1*:streamingID/'show'> <2:duration(min)> <3:streamingInfoPath>"
 leastArgs=`echo -n ${argsMessage} | sed "s;[^*];;g" | wc -m`
 
-[ $# -ge ${leastArgs:-0} ] || { eval "echo -e \"${argsErrorHead}${argsMessage}\" "; exit; } 
 
-streamingURLInfo=$1
-streamingID=$2
-duration=$3
+streamingID=$1
+duration=$2
+streamingInfoPath=${3:-"/home/radipi/Script/streamingListAll"}
 
-# ! $1 not found
-[ -f ${streamingURLInfo} ] || { echo "!! streamingURLInfo(${streamingURLInfo}) not found"; exit; }
+# ! $streamingInfoPath not found
+[ -f ${streamingInfoPath} ] || { echo "!! streamingURLInfo(${streamingURLInfo}) not found"; exit; }
 
-# if ${streamingID} is blank, check ${streamingURLInfo}
-[ -n "${streamingID}" ] || { cat ${streamingURLInfo}; exit; }
+# ! missing streamingID
+[ "${streamingID}" = "" ] &&  { cat ${streamingInfoPath}; echo -e "\n${argsMessage}\n!! specify streamingID or 'show' for view all streamingInfo"; exit; }
 
-# if ${streamingID} is "R" , get random stationName from ${streamingURLInfo}
-[ "${streamingID}" = "R" ] && streamingID=$(cat ${streamingURLInfo} | cut -d, -f1 | shuf | head -1)
+# if ${streamingID} is "R" , get random stationName from ${streamingInfoPath}
+[ "${streamingID}" = "R" ] && streamingID=$(cat ${streamingInfoPath} | cut -d, -f1 | shuf | head -1)
 
-URL=$(cat ${streamingURLInfo} | grep -i ^${streamingID}, | cut -d, -f3)
+URL=$(cat ${streamingInfoPath} | grep -i ^${streamingID}, | cut -d, -f3)
+
+[ "${streamingID}" = "show" ] && { cat ${streamingInfoPath}; exit; }
 
 # ! nodata in URL
-[ -n "${URL}" ] ||  { cat ${streamingURLInfo}; echo -e "\n!! URL for streamingID(${streamingID}) not matched.\ncheck streamingURLInfo(${streamingURLInfo})"; exit; }
+[ -n "${URL}" ] ||  { cat ${streamingInfoPath}; echo -e "\n!! URL for streamingID(${streamingID}) not matched.\ncheck streamingURLInfo(${streamingURLInfo})"; exit; }
 
 # ! streamingID duplcate
-[ $(echo "${URL}" | grep -c ^ ) -eq 1 ] ||  { cat ${streamingURLInfo}; echo -e "\n!! streamingURL matched by streamingID(${streamingID}) is not unique.\n check streamingURLInfo(${streamingURLInfo})";   exit; }
+[ $(echo "${URL}" | grep -c ^ ) -eq 1 ] ||  { cat ${streamingInfoPath}; echo -e "\n!! streamingURL matched by streamingID(${streamingID}) is not unique.\n check streamingURLInfo(${streamingURLInfo})";   exit; }
 
 
 mpvOption=" --no-video --msg-level=all=info "
