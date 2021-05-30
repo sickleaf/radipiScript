@@ -13,6 +13,8 @@ def index():
 def stop():
     cmd="/home/radipi/Script/killsound.sh TERM"
     o = subprocess.Popen(cmd,shell=True,stdout=subprocess.PIPE).stdout
+    cmd="echo autoPlay=off | tee /home/radipi/Script/radioMode"
+    o = subprocess.run(cmd,shell=True,stdout=subprocess.PIPE).stdout
     return "quit"
 
 @app.route('/getAudio')
@@ -28,14 +30,12 @@ def getAudio():
 def setList():
     stationInfo=request.args.get("param")
 
-    cmd="/home/radipi/Script/playStreaming.sh "+stationInfo+" | cut -d, -f-2"
+    cmd="/home/radipi/Script/playStreaming.sh show '' "+stationInfo+" | cut -d, -f-2"
 
     o = subprocess.run(cmd,shell=True,stdout=subprocess.PIPE).stdout
 
     mess=o.decode().strip()
     return str(mess)
-
-
 
 @app.route('/speed')
 def speed():
@@ -90,9 +90,9 @@ def streaming():
     streamingID=request.args.get("streamingID")
 
     if not streamingID:
- 	   cmd="/home/radipi/Script/playStreaming.sh "+setList+" "+ID+" 2>&1"
+ 	   cmd="/home/radipi/Script/playStreaming.sh "+ID+" '' "+setList+" 2>&1"
     else:
- 	   cmd="/home/radipi/Script/playStreaming.sh "+setList+" "+streamingID+" 2>&1"
+ 	   cmd="/home/radipi/Script/playStreaming.sh "+streamingID+" '' "+setList+" 2>&1"
 
     print(cmd)
     o = subprocess.Popen(cmd,shell=True,stdout=subprocess.PIPE).stdout
@@ -148,6 +148,26 @@ def fmtuner():
       cmd="/home/radipi/Script/" + scriptName + " " + freq
       o = subprocess.Popen(cmd,shell=True,stdout=subprocess.PIPE).stdout
       return "fmtuner[" + freq + "]"
+
+@app.route('/autoPlay')
+def autoPlay():
+    mode=request.args.get("param")
+    
+    cmd="/home/radipi/Script/saveSpreadLocal.sh"
+    o = subprocess.Popen(cmd,shell=True,stdout=subprocess.PIPE).stdout
+    cmd="echo autoPlay=" + mode + " | tee /home/radipi/Script/radioMode"
+    o = subprocess.run(cmd,shell=True,stdout=subprocess.PIPE).stdout
+    return "autoPlay[" + mode + "]"
+
+@app.route('/timetable')
+def timetable():
+    timetable=request.args.get("param")
+    channel=request.args.get("ch")
+    
+    cmd="/home/radipi/Script/autoPlayByTime.sh " + timetable
+    o = subprocess.Popen(cmd,shell=True,stdout=subprocess.PIPE).stdout
+    return "channel[" + channel+ "]"
+
 
 
 @app.route('/changevol')
