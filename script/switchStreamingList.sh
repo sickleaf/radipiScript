@@ -21,10 +21,10 @@ read flag
 if [ "${flag}" -eq 1 ]; then
 	echo switch to "${allPath}"
 	sed -i "s;${basePath##*/};${allPath##*/};g" ${configPath}
-	echo swithc done "${configPath}"
+	echo switch done "${configPath}. refresh browser."
 else
 	echo switch to "${basePath}"
 	sed -i "s;${allPath##*/};${basePath##*/};g" ${configPath}
-	echo swithc done "${configPath}"
+	echo switch done "${configPath} refresh browser."
 
 fi
