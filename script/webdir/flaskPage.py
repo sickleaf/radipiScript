@@ -153,11 +153,9 @@ def fmtuner():
 def autoPlay():
     mode=request.args.get("param")
     
-    cmd="/home/radipi/Script/saveSpreadLocal.sh"
-    o = subprocess.Popen(cmd,shell=True,stdout=subprocess.PIPE).stdout
     cmd="echo autoPlay=" + mode + " | tee /home/radipi/Script/radioMode"
     o = subprocess.run(cmd,shell=True,stdout=subprocess.PIPE).stdout
-    cmd="cat /tmp/sheet1 | grep Sun, | sort -t, -k3,3r | awk -v FS=',' -v nowTime=$(LC_ALL='' LC_TIME=C date '+%H:%M' ) 'nowTime <= $3 {print}' | tail -1 | sed 's;,,;;g; s;^;[NextInfo] ;g'"
+    cmd="/home/radipi/Script/saveSpreadLocal.sh 2>&1 > /dev/null; /home/radipi/Script/autoPlayByTime.sh /tmp/sheet1 true true"
     o = subprocess.run(cmd,shell=True,stdout=subprocess.PIPE).stdout
     mess=o.decode().strip()
     mess="<br />".join(mess.split("\n"))
