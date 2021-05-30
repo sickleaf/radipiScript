@@ -75,3 +75,7 @@
 	background-color: #4CAF50;
 	color: black;
 }
+
+label.menu {
+	font-weight:bold;
+}
