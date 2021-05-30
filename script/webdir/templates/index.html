@@ -85,6 +85,27 @@ $( function() {
 		}
 
 	});
+
+	$("#mnt").click(function() {
+			$('.foreach').each(function(index){
+				index = index+1;
+				$(this).attr("value",'Radipi.mnt'+(index));
+				$(this).text("playUSB("+index+")");
+				$(this).removeClass("setChecker");
+				$(this).addClass("setCheckerWithout0");
+			});
+	});
+
+	$("#table").click(function() {
+			$('.foreach').each(function(index){
+				index = index+1;
+				$(this).attr("value",'Radipi.ch'+(index));
+				$(this).text("channel"+index);
+				$(this).removeClass("setCheckerWithout0");
+				$(this).addClass("setChecker");
+			});
+	});
+
 } );
 
 function csv2json(csvCat){
@@ -133,27 +154,31 @@ function getAudioInfo(){
 
         <div>
 		<p id="buttonMessage">loaded!</p>
-			<label>keyword</label> <input id="value"> 
+			<label class="menu">keyword</label> <input id="value"> 
 
-			<label for="sort">sort</label>
+			<label for="sort" class="menu">sort</label>
 				<select name="sort" id="sort">
 					<option value="s">shuffle</option>
 					<option value="n">name order</option>
 					<option value="r">reverse order</option>
 				</select>
 
-			<label for="streamingID">list</label>
+			<label for="streamingID" class="menu">list</label>
 				<select id="streamingID" name="streamingID">
 				</select>
 
+			<label class="menu">mode</label>
+				<input type="radio" id="mnt" name="mode" value="mnt" checked><label for="mnt">mountDrive</label>
+				<input type="radio" id="table" name="mode" value="table"><label for="table">timetable</label>
 
-			<label>number</label>
+			<label class="menu">number</label>
 				<input type="radio" id="zero" name="numbers" value="0" checked><label for="zero">0</label>
 				<input type="radio" id="one" name="numbers" value="1"><label for="one">1</label>
 				<input type="radio" id="three" name="numbers" value="3"><label for="three">3</label>
 				<input type="radio" id="ten" name="numbers" value="10"><label for="ten">10</label>
 				<input type="radio" id="thirty" name="numbers" value="30"><label for="thirty">30</label>
 
+			
         <div class="grid-base container4">
 	        <button id="radiko" class="grid-item h5 getParam" value="Radipi.radiko">radiko(ID)</button>
 	        <button id="random" class="grid-item h5" value="Radipi.radikoRandom">radiko(random)</button>
@@ -161,9 +186,10 @@ function getAudioInfo(){
 	        <button id="randomStreaming" class="grid-item h5 setChecker" value="Radipi.randomStreaming">streaming(random)</button>
         </div>
 
-        <div class="grid-base container2">
+        <div class="grid-base container3">
 	        <button id="joakfm" class="grid-item h5" value="Radipi.JOAKFM">NHK-FM</button>
 	        <button id="bbcworld" class="grid-item h5" value="Radipi.BBCWorld">BBCWorld</button>
+	        <button id="fmtuner" class="grid-item h5 getParam" value="Radipi.FMtuner">playFM</button>
         </div>
  
         <div class="grid-base container2">
@@ -172,10 +198,10 @@ function getAudioInfo(){
         </div>
  
         <div class="grid-base container4">
-	        <button id="fmtuner" class="grid-item h5 getParam" value="Radipi.FMtuner">playFM</button>
-		<button id="menu1" class="grid-item h5 getParam setCheckerWithout0" value="Radipi.menu1">playUSB(1)</button>
-	        <button id="menu2" class="grid-item h5 getParam setCheckerWithout0" value="Radipi.menu2">playUSB(2)</button>
-	        <button id="menu3" class="grid-item h5 getParam setCheckerWithout0" value="Radipi.menu3">playUSB(3)</button>
+		<button id="menu1" class="grid-item h5 foreach getParam setCheckerWithout0" value="Radipi.mnt1">playUSB(1)</button>
+	        <button id="menu2" class="grid-item h5 foreach getParam setCheckerWithout0" value="Radipi.mnt2">playUSB(2)</button>
+	        <button id="menu3" class="grid-item h5 foreach getParam setCheckerWithout0" value="Radipi.mnt3">playUSB(3)</button>
+		<button id="menu4" class="grid-item h5" value="Radipi.autoPlay">autoPlayMode</button>
         </div>
 
        
