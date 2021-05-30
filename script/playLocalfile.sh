@@ -2,8 +2,9 @@
 
 if [ $# -lt 1 ]; then
 	echo "<<usage>>"
-	echo "(1)resourcePath (2)play numbers[default=100, if number=0, show filelist] (3)sort option(n/r) (4)keyword"
-	echo "(resourcePath must be actual directory)"
+	echo "(1)resourcePath (2)play numbers[default=100, if number=0, show filelist] (3)sort option[s:sort/n:name order/r:reverse order] (4)filter keyword"
+	echo "(resourcePath must exist)"
+	echo ""
 	echo -e "[ex1. play 3 files in /mnt/radipiDrive shuffle] \n$0 /mnt/radipiDrive 3 s\n"
 	echo -e "[ex2. play files in /mnt/radipiDrive in reverse order] \n$0 /mnt/radipiDrive '' r\n"
 	echo -e "[ex3. play files in /usr/share/sounds , whose name include 'Left', in numeric order] \n$0 /usr/share/sounds '' n Left\n"
@@ -11,21 +12,9 @@ if [ $# -lt 1 ]; then
 	exit 1
 fi
 
-## NAME
-#SCRIPTNAME=Script;
-#CONFIGNAME=config;
-#CSVFILENAME=dirList.csv;
-## USER
-#RADIPIUSER=radipi;
-## DIR
-#SCRIPTPATH=/home/${RADIPIUSER}/${SCRIPTNAME}
-## DIR
-#CONFIGDIR=${SCRIPTPATH}/${CONFIGNAME}
-#dirCSVPath=${CONFIGDIR}/${CSVFILENAME}
-
 resourcePath=$1
-number=${2:-100}
-sortOption=${3:-"n"}
+number=${2:-0}
+sortOption=${3:-"s"}
 keyword=${4:-""}
 
 namePattern="-name *.mp3 -o -name *.m4a -o -name *.wav "
@@ -40,8 +29,6 @@ option="--no-video --msg-level=all=info --idle=no ${bluetoothOp} --input-ipc-ser
 
 
 [ -d "${resourcePath}" ] || echo "resourcePath("${1}") not exist.";
-
-#echo "[if you want to stop playing, press Ctrl + C ]"
 
 if [ "${sortOption}" = "s" ]; then
 	find "${resourcePath%/*}/" -type f ${namePattern} | shuf | grep "${keyword}" | head -$(expr ${number}) | xargs -I@ ${player} ${option} "@";
