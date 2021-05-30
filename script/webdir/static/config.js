@@ -25,12 +25,18 @@ Radipi.playStreaming="/streaming?param="
 Radipi.randomStreaming="/streaming?param=R&setList=/home/radipi/Script/streamingListBase"
 
 Radipi.radipiDrive="/mntRadio?param=/mnt/radipiDrive/"
-Radipi.menu1="/mntRadio?param=/mnt/radipiDrive/"
-Radipi.menu2="/mntRadio?param=/mnt/radipiDrive/"
-Radipi.menu3="/mntRadio?param=/mnt/radipiDrive/"
+Radipi.mnt1="/mntRadio?param=/mnt/radipiDrive/"
+Radipi.mnt2="/mntRadio?param=/mnt/radipiDrive/"
+Radipi.mnt3="/mntRadio?param=/mnt/radipiDrive/"
+Radipi.ch1 ="/timetable?ch=1&param=/tmp/sheet1"
+Radipi.ch2 ="/timetable?ch=2&param=/tmp/sheet2"
+Radipi.ch3 ="/timetable?ch=3&param=/tmp/sheet3"
+
 Radipi.FMtuner="/fmtuner?param=playFM.sh"
 
 Radipi.getAudio="/getAudio"
+
+Radipi.autoPlay="/autoPlay?param=on"
 
 Radipi.toggle="/command?param=echo 'cycle pause' | socat - /tmp/remocon.socket"
 Radipi.quit="/quit"
