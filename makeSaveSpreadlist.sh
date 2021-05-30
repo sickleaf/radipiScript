@@ -21,7 +21,7 @@ for i in $(seq $sheetnum);
 do
 	echo input bookID[line:$i]; read bookID; echo
 	
-	echo input sheetID[line:$i]; read sheetID; echo
+	echo "input sheetID(gid)[line:$i]"; read sheetID; echo
 	
 	echo input fileName[line:$i]; read fileName; echo
 	
