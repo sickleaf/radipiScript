@@ -55,6 +55,18 @@ function getProgramLine(){
 		awk -v FS="," -v nowTime=${nowTime} 'nowTime >= $3 {print}' | # list up data BEFORE $nowTime
 		tail -1 | # get most recent one 
 		grep ${grepJust} ) # if grep
+
+		# if programLine="",justFlag=false, checknextFlag=false; play already started from yesterday
+		if [ "${programLine}" = "" -a ! "${justFlag}" = true ]; then
+			weekDay=$(LC_ALL="" LC_TIME=C date -d "1day ago" '+%a')
+
+			programLine=$(cat ${filePath} |
+			grep ${weekDay}, | 		# grep today's programLine
+			sort -t, -k3,3h |		# sort human numeric sort
+			tail -1 | # get most recent one
+			grep ${grepJust} ) # if grep
+
+		fi
 		
 	fi
 
@@ -108,8 +120,8 @@ else
 	programID=$(echo ${programLine} | cut -d, -f 4);
 	shArgs=$(echo ${programLine} | cut -d, -f 6- | tr "," " ");
 
-	#killsound
-	echo "bash ${killsoundScript} TERM" | bash
+	# if play line exists, killsound
+	[ "${programLine}" = "" ] || echo "bash ${killsoundScript} TERM" | bash
 
 	case "$playType" in
 	"radiko" ) echo "${radikoScript} ${programID} ${shArgs} ";echo; echo "bash ${radikoScript} ${programID}" | bash ;;
