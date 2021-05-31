@@ -35,7 +35,7 @@ if [ ! $mpvcheck -eq 0 -a "${grepMPV}" = "" ]; then
 	if [ "${grepMPV}"  = "" ]; then
 
 		#radiko
-		grepMPV=$(ps aux | grep [m]pv | awk '$0=$NF' | cut -d/ -f4)
+		grepMPV=$(ps aux | grep [m]pv | grep -v autoPlayByTime.sh | awk '$0=$NF' | cut -d/ -f4)
 	else
 		#streaming
 		additionalInfo=$(omxplayer -i $url 2>&1  | grep -E "^ *(StreamTitle|icy-description)" | sed "s;   *;;g") 
