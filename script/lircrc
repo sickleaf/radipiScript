@@ -1,0 +1,6 @@
+volup#bash  /home/radipi/Script/setVolume.sh 5 +
+voldown#bash /home/radipi/Script/setVolume.sh 4 -
+broadSW#bash /home/radipi/Script/killsound.sh KILL
+decide#bash /home/radipi/Script/killsound.sh KILL; bash /home/radipi/Script/playradiko.sh $([ -f /tmp/station ] && cat /tmp/station || echo JOAK)
+one#echo JOAK > /tmp/station
+two#echo R > /tmp/station

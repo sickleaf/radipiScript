@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <link rel="stylesheet" href="/static/style.css" />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <title>radiberry pi</title>
+<script type="text/javascript">
+
+var intervalCnt = new Array();
+
+$( function() {
+	var seturl="/setList?param="+Radipi.setList
+	$.ajax( {
+		type: "GET",
+		url: seturl,
+		success: function( data ) {
+			var dt = csv2json(data.split('\n'));
+			for(var i in dt){
+				$('#streamingID').append("<option value=" +dt[i].stationID +">"+ dt[i].stationName + "</option>");
+			}
+		},
+		error: function( data ) {
+			$( '#status' ).text("[ERROR]"+Radipi.setList+" not found.");
+		}
+
+	} );
+
+	$( "button" ).click(function() {
+		$('#buttonMessage').text($(this).html());
+
+		var val=$(this).val();
+		var setval=eval(val)
+
+		var checknum=$('input[name="numbers"]:checked').val();
+
+		if(intervalCnt.length > 0){
+			clearInterval(intervalCnt.shift());
+		}
+
+		if( $(this).hasClass("setCheckerWithout0")){
+			if(checknum!=0){
+				$(this).addClass("setChecker");
+			}else{
+				$(this).removeClass("setChecker");
+			}
+		}
+
+		if( $(this).hasClass("setChecker") ){
+			intervalCnt.push(setInterval(getAudioInfo,Radipi.getAudioInterval));
+		}
+
+		if( $(this).hasClass("getParam") ){
+			var val=$('#value').val();
+			var num=$('input[name="numbers"]:checked').val();
+			var streamingID=$('#streamingID').val();
+			var sort=$('#sort').val();
+			var urlData=setval+"&value="+val+"&sort="+sort+"&numbers="+num+"&streamingID="+streamingID+"&setList="+Radipi.setList;
+			$.ajax( {
+				type: "GET",
+				url: urlData,
+				success: function( data ) {
+					var dt = data;
+					$( '#status' ).html(dt);
+				},
+				error: function( data ) {
+					$( '#status' ).text("[ERROR]");
+				}
+			} );
+	
+		}else{
+			$.ajax( {
+				type: "GET",
+				url: setval,
+				success: function( data ) {
+					var dt = data;
+					$( '#status' ).html(dt);
+				},
+				error: function( data ) {
+					$( '#status' ).text("[ERROR]");
+				}
+			} );
+		}
+
+	});
+
+	$("#mnt").click(function() {
+			$('.foreach').each(function(index){
+				index = index+1;
+				$(this).attr("value",'Radipi.mnt'+(index));
+				$(this).text("playUSB("+index+")");
+				$(this).removeClass("setChecker");
+				$(this).addClass("setCheckerWithout0");
+			});
+	});
+
+	$("#table").click(function() {
+			$('.foreach').each(function(index){
+				index = index+1;
+				$(this).attr("value",'Radipi.ch'+(index));
+				$(this).text("channel"+index);
+				$(this).removeClass("setCheckerWithout0");
+				$(this).addClass("setChecker");
+			});
+	});
+
+} );
+
+function csv2json(csvCat){
+
+	var jsonCat = [];
+	
+	var items = csvCat[0].split(",");
+	
+	for (var i=1; i < csvCat.length; i++){
+		var newline = new Object();
+		var csvData = csvCat[i].split(",");
+		
+		for (var j=0; j < items.length; j++){
+			newline[items[j]] = csvData[j]
+		}
+
+		jsonCat.push(newline);
+	}
+
+	return jsonCat
+}
+
+function getAudioInfo(){
+	var urlData=Radipi.getAudio
+	$.ajax( {
+		type: "GET",
+		url: urlData,
+		success: function( data ) {
+			var dt = data;
+			$( '#status' ).html(dt);
+		},
+		error: function( data ) {
+			$( '#status' ).text("[ERROR]");
+		}
+	} );
+
+}
+
+
+</script>
+
+
+</head>
+
+<body>
+
+        <div>
+		<p id="buttonMessage">loaded!</p>
+			<label class="menu">keyword</label> <input id="value"> 
+
+			<label for="sort" class="menu">sort</label>
+				<select name="sort" id="sort">
+					<option value="s">shuffle</option>
+					<option value="n">name order</option>
+					<option value="r">reverse order</option>
+				</select>
+
+			<label for="streamingID" class="menu">list</label>
+				<select id="streamingID" name="streamingID">
+				</select>
+
+			<label class="menu">mode</label>
+				<input type="radio" id="mnt" name="mode" value="mnt" checked><label for="mnt">mountDrive</label>
+				<input type="radio" id="table" name="mode" value="table"><label for="table">timetable</label>
+
+			<label class="menu">number</label>
+				<input type="radio" id="zero" name="numbers" value="0" checked><label for="zero">0</label>
+				<input type="radio" id="one" name="numbers" value="1"><label for="one">1</label>
+				<input type="radio" id="three" name="numbers" value="3"><label for="three">3</label>
+				<input type="radio" id="ten" name="numbers" value="10"><label for="ten">10</label>
+				<input type="radio" id="thirty" name="numbers" value="30"><label for="thirty">30</label>
+
+			
+        <div class="grid-base container4">
+	        <button id="radiko" class="grid-item h5 getParam" value="Radipi.radiko">radiko(ID)</button>
+	        <button id="random" class="grid-item h5" value="Radipi.radikoRandom">radiko(random)</button>
+	        <button id="playStreaming" class="grid-item h5 getParam setChecker" value="Radipi.playStreaming">streaming(ID)</button>
+	        <button id="randomStreaming" class="grid-item h5 setChecker" value="Radipi.randomStreaming">streaming(random)</button>
+        </div>
+
+        <div class="grid-base container3">
+	        <button id="joakfm" class="grid-item h5" value="Radipi.JOAKFM">NHK-FM</button>
+	        <button id="bbcworld" class="grid-item h5" value="Radipi.BBCWorld">BBCWorld</button>
+	        <button id="fmtuner" class="grid-item h5 getParam" value="Radipi.FMtuner">playFM</button>
+        </div>
+ 
+        <div class="grid-base container2">
+	        <button id="toggle" class="grid-item h5 setChecker" value="Radipi.toggle">Stop/Play</button>
+	        <button id="quit" class="grid-item h5" value="Radipi.quit">Quit</button>
+        </div>
+ 
+        <div class="grid-base container4">
+		<button id="menu1" class="grid-item h5 foreach getParam setCheckerWithout0" value="Radipi.mnt1">playUSB(1)</button>
+	        <button id="menu2" class="grid-item h5 foreach getParam setCheckerWithout0" value="Radipi.mnt2">playUSB(2)</button>
+	        <button id="menu3" class="grid-item h5 foreach getParam setCheckerWithout0" value="Radipi.mnt3">playUSB(3)</button>
+		<button id="menu4" class="grid-item h5" value="Radipi.autoPlay">autoPlayMode</button>
+        </div>
+
+       
+        <div class="grid-base container4">
+	        <button id="soundminus" class="grid-item h5 setChecker" value="Radipi.voldown">volume[-]</button>
+	        <button id="soundminus" class="grid-item h5 setChecker" value="Radipi.speeddown">speed-0.1x</button>
+	        <button id="soundplus" class="grid-item h5 setChecker" value="Radipi.speedup">speed+0.1x</button>
+	        <button id="soundplus" class="grid-item h5 setChecker" value="Radipi.volup">volume[+]</button>
+        </div>
+        
+        <div class="grid-base container4">
+	        <button id="back10p" class="grid-item h10 setChecker" value="Radipi.back10p">-10%</button>
+	        <button id="back20sec" class="grid-item h10 setChecker" value="Radipi.back20sec">-20sec</button>
+	        <button id="for20sec" class="grid-item h10 setChecker" value="Radipi.for20sec">20sec</button>
+	        <button id="for10p" class="grid-item h10 setChecker" value="Radipi.for10p">10%</button>
+        </div>
+
+        <div class="grid-base container3">
+	        <button id="backward" class="grid-item h10 setChecker" value="Radipi.backward" >&lt;&lt;</button>
+	        <button id="getAudio" class="grid-item h10 setChecker" value="Radipi.getAudio" >info</button>
+		<button id="forward" class="grid-item h10 setChecker" value="Radipi.forward" >&gt;&gt;</button>
+        </div>
+
+	<br>
+        <p id="status">status shows here...</p>
+
+
+
+</body>
+
+<script>
+document.write('<script src="/static/config.js?' + new Date().getTime() + '"><\/script>');
+</script>
+
+</html>

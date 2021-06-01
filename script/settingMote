@@ -1,0 +1,11 @@
+[DEFAULT]
+BTN_UP=volup
+BTN_DOWN=voldown
+BTN_LEFT=
+BTN_RIGHT=
+BTN_A=decide
+BTN_B=broadSW
+BTN_PLUS=volup
+BTN_MINUS=voldown
+BTN_1=one
+BTN_2=two

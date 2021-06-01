@@ -1,11 +1,23 @@
 #!/bin/bash
 
+volume=${1-80}
+
+ROOTPATH=$(cd $(dirname $0); pwd);
+bash ${ROOTPATH}/script/setVolume.sh ${volume}
+
 type mpv > /dev/null
 
 if [ $? -ne 0 ]; then
-	echo 'mpv does not installed. run "apt-get install mpv"'
+	echo 'mpv does not installed. run "apt install mpv -y"'
 else
-	echo "mpv installed. If you want to stop playing, Press [Ctrl + C]"
+	echo "mpv installed."
 fi
 
-mpv --no-video https://www.youtube.com/watch?v=B2D3lGOrdVQ
+bluetoothaddr=$(hcitool con | grep -Eo "[0-9A-F:]{9,}")
+
+mpvOption=""
+
+[ "$(echo $bluetoothaddr)" = "" ] || mpvOption=" --audio-device=alsa/bluealsa"
+
+
+find /usr/share/sounds/* -name "*.wav" | grep Side | xargs -n1 mpv  ${mpvOption}

@@ -1,0 +1,12 @@
+stationID,stationName,url
+J1HITS,J1 HITS,https://jenny.torontocast.com:2000/stream/j1hits/stream
+J1XTRA,J1 XTRA,https://jenny.torontocast.com:2000/stream/j1xtra/stream
+J1GOLD,J1 GOLD,https://jenny.torontocast.com:2000/stream/j1gold/stream
+Jazz24,Jazz24,https://prod-35-230-27-165.wostreaming.net/ppm-jazz24aac256-ibc1
+WQXR,WQXR Classic,http://wnyc-wqxr-ice.streamguys.com:80/wqxr
+ABCFM,ABC Classic FM,http://live-radio01.mediahubaustralia.com/2FMW/mp3
+ABCClassic,ABC Classic 2,http://live-radio01.mediahubaustralia.com/FM2W/mp3
+CFM,Classic FM,http://media-ice.musicradio.com:80/ClassicFMMP3
+BBCR1,BBC Radio 1,http://open.live.bbc.co.uk/mediaselector/5/select/version/2.0/mediaset/http-icy-mp3-a/vpid/bbc_radio_one/format/pls.pls
+BBCAsia,BBC Radio Asian Network,http://open.live.bbc.co.uk/mediaselector/5/select/version/2.0/mediaset/http-icy-mp3-a/vpid/bbc_asian_network/format/pls.pls
+BBCWorld,BBC World Service,http://wsdownload.bbc.co.uk/worldservice/meta/live/shoutcast/mp3/eieuk.pls

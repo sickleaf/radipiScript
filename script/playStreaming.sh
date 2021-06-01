@@ -1,49 +1,46 @@
 #!/bin/bash
 
-# $1
+argsErrorHead='!!  args missing. present args=${#}, needed at least ${leastArgs} (functionName=$0})\n'
+argsMessage=" usage: <1*:streamingID/'show'> <2:duration(min)> <3:streamingInfoPath>"
+leastArgs=`echo -n ${argsMessage} | sed "s;[^*];;g" | wc -m`
 
-if [ $# -lt 1 ]; then
-	echo "<<usage>>"
-	echo "specify Streaming URL ID described in config/streamingList.csv"
-	echo "ex. play J1 GOLD% ->  $0 J1GOLD"
-	exit 1
-fi
 
-# NAME
+streamingID=$1
+duration=$2
+streamingInfoPath=${3:-"/home/radipi/Script/streamingListAll"}
 
-SCRIPTNAME=Script;
+# ! $streamingInfoPath not found
+[ -f ${streamingInfoPath} ] || { echo "!! streamingURLInfo(${streamingURLInfo}) not found"; exit; }
 
-CONFIGNAME=config;
-CSVFILENAME=streamingList.csv;
+# ! missing streamingID
+[ "${streamingID}" = "" ] &&  { cat ${streamingInfoPath}; echo -e "\n${argsMessage}\n!! specify streamingID or 'show' for view all streamingInfo"; exit; }
 
-# USER
+# if ${streamingID} is "R" , get random stationName from ${streamingInfoPath}
+[ "${streamingID}" = "R" ] && streamingID=$(cat ${streamingInfoPath} | cut -d, -f1 | shuf | head -1)
 
-RADIPIUSER=radipi;
+URL=$(cat ${streamingInfoPath} | grep -i ^${streamingID}, | cut -d, -f3)
 
-# DIR
+[ "${streamingID}" = "show" ] && { cat ${streamingInfoPath}; exit; }
 
-SCRIPTPATH=/home/${RADIPIUSER}/${SCRIPTNAME}
+# ! nodata in URL
+[ -n "${URL}" ] ||  { cat ${streamingInfoPath}; echo -e "\n!! URL for streamingID(${streamingID}) not matched.\ncheck streamingURLInfo(${streamingURLInfo})"; exit; }
 
-# DIR
+# ! streamingID duplcate
+[ $(echo "${URL}" | grep -c ^ ) -eq 1 ] ||  { cat ${streamingInfoPath}; echo -e "\n!! streamingURL matched by streamingID(${streamingID}) is not unique.\n check streamingURLInfo(${streamingURLInfo})";   exit; }
 
-CONFIGDIR=${SCRIPTPATH}/${CONFIGNAME}
 
-# PLAYER
+mpvOption=" --no-video --msg-level=all=info "
 
-player=mpv
-option='--no-video --msg-level=all=info'
+bluetoothaddr=$(hcitool con | grep -Eo "[0-9A-F:]{9,}")
 
-streamID=$1;
+[ "$(echo $bluetoothaddr)" = "" ] || mpvOption=${mpvOption}" --audio-device=alsa/bluealsa "
 
-streamDataPath=${CONFIGDIR}/${CSVFILENAME}
+dOption=""
 
-streamURL=$(cat ${streamDataPath} | grep ${streamID} | cut -d, -f 3);
-streamCheck=$(echo ${streamURL} | wc -w)
+# set duration for dOption
+[ -n "${duration}" ] && dOption=" --length=$((duration*60))"
 
-if [ ${streamCheck} -eq 0 ]; then
-	echo "** [ERROR] streaming URL not found **";
-	exit 1;
-else
-	${player} ${option} ${streamURL};
-fi
+# echo execution
+[ -n "${duration}" ] && echo "play ${streamingID} (duration: ${duration}min)" || echo "play ${streamingID} (no duration specified)" 
 
+mpv ${mpvOption} ${dOption} ${URL}
