@@ -30,10 +30,16 @@ option="--no-video --msg-level=all=info --idle=no ${bluetoothOp} --input-ipc-ser
 
 [ -d "${resourcePath}" ] || echo "resourcePath("${1}") not exist.";
 
+
+[ "$number" -eq 0 ] || playOption=" | head -$(expr ${number}) | xargs -I@ ${player} ${option} \"@\" "
+
+
+
 if [ "${sortOption}" = "s" ]; then
-	find "${resourcePath%/*}/" -type f ${namePattern} | shuf | grep "${keyword}" | head -$(expr ${number}) | xargs -I@ ${player} ${option} "@";
-	[ "$number" -eq 0 ] && find "${resourcePath%/*}/" -type f ${namePattern} | shuf | grep "${keyword}"
+	echo "find \"${resourcePath%/}/\" -type f ${namePattern} | shuf | grep \"${keyword}\" " | sed "s;$;${playOption};g" | bash
+	#[ "$number" -eq 0 ] && find "${resourcePath%/}/" -type f ${namePattern} | shuf | grep "${keyword}"
 else
-	find "${resourcePath%/*}/" -type f ${namePattern} | sort -"${sortOption}" | grep "${keyword}" | head -$(expr ${number}) | xargs -I@ ${player} ${option} "@";
-	[ "$number" -eq 0 ] && find "${resourcePath%/*}/" -type f ${namePattern} | sort -"${sortOption}" | grep "${keyword}"
+	echo "find \"${resourcePath%/}/\" -type f ${namePattern} | sort -\"${sortOption}\" | grep \"${keyword}\" " | sed "s;$;${playOption};g" | bash
+	#find "${resourcePath%/}/" -type f ${namePattern} | sort -"${sortOption}" | grep "${keyword}" | head -$(expr ${number}) | xargs -I@ ${player} ${option} "@";
+	#[ "$number" -eq 0 ] && find "${resourcePath%/}/" -type f ${namePattern} | sort -"${sortOption}" | grep "${keyword}"
 fi
