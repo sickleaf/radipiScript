@@ -87,23 +87,52 @@ $( function() {
 	});
 
 	$("#mnt").click(function() {
-			$('.foreach').each(function(index){
-				index = index+1;
-				$(this).attr("value",'Radipi.mnt'+(index));
-				$(this).text("playUSB("+index+")");
-				$(this).removeClass("setChecker");
-				$(this).addClass("setCheckerWithout0");
-			});
+		var seturl=Radipi.setConfig
+
+		$('.foreach').each(function(index){
+			index = index+1;
+			$(this).attr("value",'Radipi.mnt'+(index));
+			$(this).text("playUSB("+index+")");
+			$(this).removeClass("setChecker");
+			$(this).addClass("setCheckerWithout0");
+		});
+
+		$.ajax( {
+			type: "GET",
+			url: seturl,
+			success: function( data ) {
+				var dt = data;
+				$( '#status' ).html(dt);
+			},
+			error: function( data ) {
+				$( '#status' ).text("[ERROR]");
+			}
+		} );
 	});
 
 	$("#table").click(function() {
-			$('.foreach').each(function(index){
-				index = index+1;
-				$(this).attr("value",'Radipi.ch'+(index));
-				$(this).text("channel"+index);
-				$(this).removeClass("setCheckerWithout0");
-				$(this).addClass("setChecker");
-			});
+		var seturl=Radipi.setConfig
+
+		$('.foreach').each(function(index){
+			index = index+1;
+			$(this).attr("value",'Radipi.ch'+(index));
+			$(this).text("channel"+index);
+			$(this).removeClass("setCheckerWithout0");
+			$(this).addClass("setChecker");
+		});
+
+		$.ajax( {
+			type: "GET",
+			url: seturl,
+			success: function( data ) {
+				var dt = data;
+				$( '#status' ).html(dt);
+			},
+			error: function( data ) {
+				$( '#status' ).text("[ERROR]");
+			}
+		} );
+
 	});
 
 } );
