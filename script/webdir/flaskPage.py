@@ -45,7 +45,7 @@ def speed():
     else:
         cmd="bash -c 'speed=$(bash /home/radipi/Script/mpvSocket.sh /tmp/remocon.socket get_property \\\"speed\\\" | sed \'s/,.*//g\' | cut -d: -f2 | tail -1);speed=$(echo $speed-0.1 | bc | sed \'s/^/0/g\');/home/radipi/Script/mpvSocket.sh /tmp/remocon.socket speed ${speed} 0'"
 
-    print(cmd)
+    #print(cmd)
     o = subprocess.Popen(cmd,shell=True,stdout=subprocess.PIPE).stdout
     return getAudio()
 
@@ -57,6 +57,16 @@ def command():
     print(cmd)
     o = subprocess.run(cmd,shell=True,stdout=subprocess.PIPE).stdout
     return getAudio()
+
+@app.route('/setConfig')
+def setConfig():
+    cmd=request.args.get("param")
+    print(cmd)
+    o = subprocess.run(cmd,shell=True,stdout=subprocess.PIPE).stdout
+
+    mess=o.decode().strip()
+    mess="<br />".join(mess.split("\n"))
+    return str(mess)
 
 
 @app.route('/radiko')
