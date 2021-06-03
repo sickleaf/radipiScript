@@ -9,16 +9,6 @@ configPath=$(pwd)/webdir/static/config.js
 
 checkOnly=$1
 
-## echo channel info  from configPath, and check file
-
-i=1
-for fl in `cat ${configPath} | grep Radipi.ch | cut -d= -f4 | sed "s;.$;;g"`;
-do
-	[ -f ${fl} ] && echo -e "[Ch.$i] exists.\t${fl}" || echo -e "[Cn.$i] does not exists.\t${fl}"
-	i=$((i+1));
-done
-
-
 ## echo mnt info  from configPath, and check list
 echo  ""
 
@@ -28,6 +18,16 @@ do
 	[ -d ${fl} ] && echo -e "[mnt.$i] exists.\t${fl}" || echo -e "[mnt.$i] does not exists.\t${fl}"
 	i=$((i+1));
 done
+
+## echo channel info  from configPath, and check file
+
+i=1
+for fl in `cat ${configPath} | grep Radipi.ch | cut -d= -f4 | sed "s;.$;;g"`;
+do
+	[ -f ${fl} ] && echo -e "[Ch.$i] exists.\t${fl}" || echo -e "[Cn.$i] does not exists.\t${fl}"
+	i=$((i+1));
+done
+
 
 # if args exists, exit
 [ "${checkOnly}" = "" ] ||  exit 0;
