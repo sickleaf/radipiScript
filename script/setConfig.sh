@@ -7,28 +7,30 @@ configPath=$(pwd)/webdir/static/config.js
 
 [ -f "${spreadList}" ] || { echo "spreadList($spreadList). run saveSpreadLocal.sh"; exit 1; }
 
+checkOnly=$1
+
 ## echo channel info  from configPath, and check file
-echo "ch"
-cat ${configPath} | grep Radipi.ch | cut -d= -f1,4- | sed "s;.$;;g" | cut -d. -f2- | tr "=" "\t"
 
 i=1
 for fl in `cat ${configPath} | grep Radipi.ch | cut -d= -f4 | sed "s;.$;;g"`;
 do
-	[ -f ${fl} ] && echo -e [Ch.$i] exists. || echo -e [Cn.$i] does not exists.
+	[ -f ${fl} ] && echo -e "[Ch.$i] exists.\t${fl}" || echo -e "[Cn.$i] does not exists.\t${fl}"
 	i=$((i+1));
 done
 
 
 ## echo mnt info  from configPath, and check list
-echo -e "\nmnt"
-cat ${configPath} | grep Radipi.mnt | cut -d= -f1,3- | sed "s;.$;;g" | cut -d. -f2- | tr "=" "\t"
+echo  ""
 
 i=1
 for fl in `cat ${configPath} | grep Radipi.mnt | cut -d= -f3 | sed "s;.$;;g"`;
 do
-	[ -d ${fl} ] && echo -e [mnt.$i] exists. || echo -e [mnt.$i] does not exists.
+	[ -d ${fl} ] && echo -e "[mnt.$i] exists.\t${fl}" || echo -e "[mnt.$i] does not exists.\t${fl}"
 	i=$((i+1));
 done
+
+# if args exists, exit
+[ "${checkOnly}" = "" ] ||  exit 0;
 
 ## check which to edit, ch OR mnt
 echo -e "\nselect which to edit(ch OR mnt)"
