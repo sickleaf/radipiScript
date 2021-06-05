@@ -5,7 +5,7 @@ dstPath=/etc/dhcpcd.conf
 
 backupPath=${dstPath%/*}/dhcpcd.conf_backup_`date +%Y%m%d_%H%M%S`
 
-manualSet=$1
+autoFlag=$1
 
 echo ! make backup
 cp -pv ${dstPath} ${backupPath}
@@ -23,14 +23,14 @@ echo
 ipaddr=$(ip route show default | grep -Eo "[0-9\.]{5,}" | tail -1)
 router=$(ip route show default | grep -Eo "[0-9\.]{5,}" | head -1)
 
-if [ "${ipaddr}" = "" -o ! "${manualSet}" = "" ]; then
+if [ "${autoFlag}" = "" ]; then
 	echo "input ipaddr"
 	read ip
 	[ "$(echo ${ip} | grep -Eo "[0-9\.]{5,}")" = "" ] && { echo "!! ip format error. enter ipaddress correctly."; exit 1; }
 	ipaddr=${ip}
 fi
 
-if [ "${router}" = "" -o ! "${manualSet}" = "" ]; then
+if [ "${autoFlag}" = "" ]; then
 	echo "input router"
 	read route 
 	[ "$(echo ${route} | grep -Eo "[0-9\.]{5,}")" = "" ] && { echo "!! router format error. enter ipaddress correctly."; exit 1; }
