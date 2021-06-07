@@ -8,8 +8,6 @@ leastArgs=`echo -n ${argsMessage} | sed "s;[^*];;g" | wc -m`
 
 dstPath=/home/radipi/Script/spreadList
 
-[ -f "${dstPath}" ] || { echo "!! dstPath($dstPath) not found."; exit; } 
-
 function getProgramLine(){
 
 	argsMessage="usage: <1*:filePath> <2:justFlag> <3:checkNext> <4:weekDay> <5:nowTime>"
@@ -71,6 +69,8 @@ justFlag=${2:-"false"}
 checknextFlag=${3:-"false"}
 
 [ "${filePath}" = "" ] && return 0;
+
+[ -f "${dstPath}" ] || { echo "!! dstPath($dstPath) not found."; exit; } 
 
 for i in `seq 7`;
 do

@@ -8,8 +8,6 @@ configPath=$(pwd)/webdir/static/config.js
 source autoPlayByTime.sh ""
 export -f getProgramLine
 
-[ -f "${spreadList}" ] || { echo "spreadList($spreadList). run saveSpreadLocal.sh"; exit 1; }
-
 checkOnly=$1
 
 ## echo mnt info  from configPath, and check list
