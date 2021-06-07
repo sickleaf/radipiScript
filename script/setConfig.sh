@@ -5,7 +5,7 @@ cd $(dirname $0)
 spreadList=$(pwd)/spreadList
 configPath=$(pwd)/webdir/static/config.js
 
-source  autoPlayByTime.sh ""
+source autoPlayByTime.sh ""
 export -f getProgramLine
 
 [ -f "${spreadList}" ] || { echo "spreadList($spreadList). run saveSpreadLocal.sh"; exit 1; }
