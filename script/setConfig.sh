@@ -5,7 +5,7 @@ cd $(dirname $0)
 spreadList=$(pwd)/spreadList
 configPath=$(pwd)/webdir/static/config.js
 
-source  autoPlayByTime.sh ""
+source autoPlayByTime.sh ""
 export -f getProgramLine
 
 [ -f "${spreadList}" ] || { echo "spreadList($spreadList). run saveSpreadLocal.sh"; exit 1; }
@@ -19,7 +19,7 @@ i=1
 for fl in `cat ${configPath} | grep Radipi.mnt | cut -d= -f3 | sed "s;.$;;g"`;
 do
 	[ -d ${fl} ] || printf "[mnt.%d:NOT EXISTS]" $i
-	[ $(ls -l ${fl} | head -5 | wc -l) -gt 2 ] && printf  "[mnt.%d:OK]" $i || printf "[mnt.%d:NOT MOUNTED. (run sudo mount -a)]" $i
+	[ $(ls -l ${fl} | head -5 | wc -l) -gt 1 ] && printf  "[mnt.%d:OK]" $i || printf "[mnt.%d:NOT MOUNTED. (run sudo mount -a)]" $i
 	printf "\t%s\n" ${fl}
 	i=$((i+1));
 done
