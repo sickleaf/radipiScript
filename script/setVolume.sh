@@ -36,19 +36,17 @@ bluetoothFlg=$(hcitool con | grep ACL | wc -l)
 if [ ${bluetoothFlg} -eq 1 ]; then
 	target=$(amixer -D bluealsa | grep " - A2DP" | head -1 | cut -d "'" -f 2)
 	daemonOption=" -D  bluealsa "
-	unit="%"
 else
 	target="Master"
 	daemonOption=""
-	unit="dB"
 fi
 
 #echo "daemonOption="${daemonOption}",target:\"${target}\""
 
 if [ "$2" = '+' ]; then 
-	sh -c "amixer ${daemonOption} sset \"${target}\" `expr $1`${unit}+"
+	sh -c "amixer ${daemonOption} sset \"${target}\" `expr $1`%+"
 elif [ "$2" = '-' ]; then 
-	sh -c "amixer ${daemonOption} sset \"${target}\" `expr $1`${unit}-"
+	sh -c "amixer ${daemonOption} sset \"${target}\" `expr $1`%-"
 else
 	sh -c "amixer ${daemonOption} sset \"${target}\" `expr $1`%"
 fi
