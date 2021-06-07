@@ -10,18 +10,6 @@ dstPath=/home/radipi/Script/spreadList
 
 [ -f "${dstPath}" ] || { echo "!! dstPath($dstPath) not found."; exit; } 
 
-filePath=$1
-justFlag=${2:-"false"}
-checknextFlag=${3:-"false"}
-
-for i in `seq 7`;
-do
-	da=$(LC_ALL="" LC_TIME=C date -d "$i day" +%a)
-
-	[ $(grep -c "$da," ${filePath}) -lt 1 ] &&  { echo -e "!! filePath($filePath) format error.\nset at least one line for [[$da]]."; exit; } 
-done
-
-
 function getProgramLine(){
 
 	argsMessage="usage: <1*:filePath> <2:justFlag> <3:checkNext> <4:weekDay> <5:nowTime>"
@@ -37,7 +25,7 @@ function getProgramLine(){
 	nowTime=${5}
 
 	# set value for grepJust 
-	[ "${justFlag}" = "true" ] && grepJust=",${nowTime},"
+	[ "${justFlag}" = "true" ] && grepJust=",${nowTime}," || grepJust=","
 
 	if [ "${checknextFlag}" = true ]; then
 		# nowTime is smaller than programLine = show future programLine.
@@ -63,7 +51,7 @@ function getProgramLine(){
 			programLine=$(cat ${filePath} |
 			grep ${weekDay}, | 		# grep today's programLine
 			sort -t, -k3,3h |		# sort human numeric sort
-			tail -1 | # get most recent one
+			tail -1 | # get most recent one 
 			grep ${grepJust} ) # if grep
 
 		fi
@@ -76,6 +64,21 @@ function getProgramLine(){
 	echo "${preInfo}${programLine}"
 
 }
+
+
+filePath=$1
+justFlag=${2:-"false"}
+checknextFlag=${3:-"false"}
+
+[ "${filePath}" = "" ] && return 0;
+
+for i in `seq 7`;
+do
+	da=$(LC_ALL="" LC_TIME=C date -d "$i day" +%a)
+
+	[ $(grep -c "$da," ${filePath}) -lt 1 ] &&  { echo -e "!! filePath($filePath) format error.\nset at least one line for [[$da]]."; exit; } 
+done
+
 
 [ -f "${filePath}" ] || { echo -e "\n${argsMessage}\n!! filePath not found. check result of saveSpreadLocal.sh"; exit; } 
 
