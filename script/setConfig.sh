@@ -5,6 +5,9 @@ cd $(dirname $0)
 spreadList=$(pwd)/spreadList
 configPath=$(pwd)/webdir/static/config.js
 
+source  autoPlayByTime.sh ""
+export -f getProgramLine
+
 [ -f "${spreadList}" ] || { echo "spreadList($spreadList). run saveSpreadLocal.sh"; exit 1; }
 
 checkOnly=$1
@@ -15,7 +18,9 @@ echo  ""
 i=1
 for fl in `cat ${configPath} | grep Radipi.mnt | cut -d= -f3 | sed "s;.$;;g"`;
 do
-	[ -d ${fl} ] && echo -e "[mnt.$i] exists.\t${fl}" || echo -e "[mnt.$i] does not exists.\t${fl}"
+	[ -d ${fl} ] || printf "[mnt.%d:NOT EXISTS]" $i
+	[ $(ls -l ${fl} | head -5 | wc -l) -gt 2 ] && printf  "[mnt.%d:OK]" $i || printf "[mnt.%d:NOT MOUNTED. (run sudo mount -a)]" $i
+	printf "\t%s\n" ${fl}
 	i=$((i+1));
 done
 
@@ -24,10 +29,21 @@ done
 i=1
 for fl in `cat ${configPath} | grep Radipi.ch | cut -d= -f4 | sed "s;.$;;g"`;
 do
-	[ -f ${fl} ] && echo -e "[Ch.$i] exists.\t${fl}" || echo -e "[Cn.$i] does not exists.\t${fl}"
+	if [ -f ${fl} ]; then
+		printf "[Ch.%d:OK]" $i
+
+		nowDate=$(LC_ALL="" LC_TIME=C date '+%a:%H:%M:%S' )
+		weekDay=$(echo $nowDate | cut -d ":" -f 1)
+		nowTime=$(echo $nowDate | cut -d ":" -f 2-3)
+	
+		programInfo=$(getProgramLine "${fl}" "false" "false" "${weekDay}" "${nowTime}" )
+		printf "\t%s\t%s\n" ${fl} ${programInfo}
+	else
+		printf "[Ch.%d:FILE NOT EXISTS]%s\n" $i ${fl}
+	fi
+
 	i=$((i+1));
 done
-
 
 # if args exists, exit
 [ "${checkOnly}" = "" ] ||  exit 0;
