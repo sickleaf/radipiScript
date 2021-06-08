@@ -1,0 +1,12 @@
+[Unit]
+Description = lirc daemon
+
+[Service]
+ExecStart=/usr/bin/irexec
+ExecReload=/usr/bin/irexec
+Type=simple
+Restart=always
+User=radipi
+
+[Install]
+WantedBy=multi-user.target
