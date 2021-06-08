@@ -8,6 +8,8 @@ leastArgs=`echo -n ${argsMessage} | sed "s;[^*];;g" | wc -m`
 
 dstPath=/home/radipi/Script/spreadList
 
+[ -f "${dstPath}" ] || { echo "!! dstPath($dstPath) not found."; exit; }
+
 function getProgramLine(){
 
 	argsMessage="usage: <1*:filePath> <2:justFlag> <3:checkNext> <4:weekDay> <5:nowTime>"
@@ -29,7 +31,7 @@ function getProgramLine(){
 		# nowTime is smaller than programLine = show future programLine.
 		programLine=$(cat ${filePath} |
 		grep ${weekDay}, | 		# grep today's programLine
-		sort -t, -k3,3h |		# sort human numeric sort
+		sort -t, -k3,3 |		# sort human numeric sort
 		awk -v FS="," -v nowTime=${nowTime} 'nowTime <= $3 {print}' | # list up data AFTER $nowTime
 		head -1 ) # get upcoming one
 
@@ -37,7 +39,7 @@ function getProgramLine(){
 		# nowTime is greater than programLine = show present programLine
 		programLine=$(cat ${filePath} |
 		grep ${weekDay}, | 		# grep today's programLine
-		sort -t, -k3,3h |		# sort human numeric sort
+		sort -t, -k3,3 |		# sort human numeric sort
 		awk -v FS="," -v nowTime=${nowTime} 'nowTime >= $3 {print}' | # list up data BEFORE $nowTime
 		tail -1 | # get most recent one 
 		grep ${grepJust} ) # if grep
@@ -48,7 +50,7 @@ function getProgramLine(){
 
 			programLine=$(cat ${filePath} |
 			grep ${weekDay}, | 		# grep today's programLine
-			sort -t, -k3,3h |		# sort human numeric sort
+			sort -t, -k3,3 |		# sort human numeric sort
 			tail -1 | # get most recent one 
 			grep ${grepJust} ) # if grep
 
@@ -69,8 +71,6 @@ justFlag=${2:-"false"}
 checknextFlag=${3:-"false"}
 
 [ "${filePath}" = "" ] && return 0;
-
-[ -f "${dstPath}" ] || { echo "!! dstPath($dstPath) not found."; exit; } 
 
 for i in `seq 7`;
 do
@@ -121,14 +121,14 @@ else
 	playType=$(echo ${programLine} | cut -d, -f 2);
 	programTime=$(echo ${programLine} | cut -d, -f 3);
 	programID=$(echo ${programLine} | cut -d, -f 4);
-	shArgs=$(echo ${programLine} | cut -d, -f 6- | tr "," " ");
+	shArgs=$(echo ${programLine} | cut -d, -f 6);
 
 	# if play line exists, killsound
 	[ "${programLine}" = "" ] || echo "bash ${killsoundScript} TERM" | bash
 
 	case "$playType" in
-	"radiko" ) echo "${radikoScript} ${programID} ${shArgs} ";echo; echo "bash ${radikoScript} ${programID}" | bash ;;
-	"stream" ) echo "${streamingScript} ${shArgs} ${programID}" ;echo; echo "bash  ${streamingScript} ${shArgs} ${programID}" | bash ;; 
+	"radiko" ) echo "${radikoScript} ${programID} ${shArgs} ";echo; echo "bash ${radikoScript} ${programID} ${shArgs}" | bash ;;
+	"stream" ) echo "${streamingScript} ${programID} ${shArgs}" ;echo; echo "bash  ${streamingScript} ${programID}" ${shArgs} | bash ;;
 	"localfile" ) echo "${playLocalfileScript} ${shArgs}"; echo; echo "bash ${playLocalfileScript} ${shArgs}" | bash ;; 
 	"lircrc" ) cat ${lircrcPath} | grep -E "^${programID}" | sed -n 1p | cut -d# -f2-  | bash ;;
 	esac
