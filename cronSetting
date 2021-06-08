@@ -1,0 +1,2 @@
+*/1 * * * * bash -c "[ \"$(cat /home/radipi/Script/radioMode)\" = \"autoPlay=on\" ] && [ \"$(ps aux | grep mpv | grep socket | grep -v grep)\" = \"\" ] && bash /home/radipi/Script/autoPlayByTime.sh /tmp/sheet1 true false"
+*/1 * * * * bash -c "sleep 4; [ $(cat /tmp/sheet1 | grep ,on | grep $(LC_ALL=""; LANG=C; date -d "1min" +\%a) | grep $(LC_ALL=""; LANG=C; date -d "1min" +\%H:\%M) | grep -c ^ ) -gt 0 ] && echo 'autoPlay=on' | tee /home/radipi/Script/radioMode"

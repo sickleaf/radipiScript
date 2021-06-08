@@ -35,7 +35,7 @@ do
 		nowTime=$(echo $nowDate | cut -d ":" -f 2-3)
 	
 		programInfo=$(getProgramLine "${fl}" "false" "false" "${weekDay}" "${nowTime}" )
-		printf "\t%s\t%s\n" ${fl} ${programInfo}
+		printf "\t%s\t%s\n" "${fl}" "${programInfo}"
 	else
 		printf "[Ch.%d:FILE NOT EXISTS]%s\n" $i ${fl}
 	fi
