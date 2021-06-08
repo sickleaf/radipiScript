@@ -16,8 +16,12 @@ echo  ""
 i=1
 for fl in `cat ${configPath} | grep Radipi.mnt | cut -d= -f3 | sed "s;.$;;g"`;
 do
-	[ -d ${fl} ] || printf "[mnt.%d:NOT EXISTS]" $i
-	[ $(ls -l ${fl} | head -5 | wc -l) -gt 1 ] && printf  "[mnt.%d:OK]" $i || printf "[mnt.%d:NOT MOUNTED. (run sudo mount -a)]" $i
+	if [ -d ${fl} ]; then 
+		[ $(ls -l ${fl} | head -5 | wc -l) -gt 1 ] && printf  "[mnt.%d:OK]" $i || printf "[mnt.%d:NOT MOUNTED. (run sudo mount -a)]" $i
+	else
+		printf "[mnt.%d:NOT EXISTS]" $i
+	fi
+
 	printf "\t%s\n" ${fl}
 	i=$((i+1));
 done
