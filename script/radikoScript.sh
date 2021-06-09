@@ -155,3 +155,35 @@ checkEnpass(){
 	readonly ENPASS pass
 
 }
+
+getStreamURL(){
+	echo ${FUNCNAME[0]}
+	argsMessage="usage: <1*:workDir> <2*:channel> <3*:fromtime> <4*:totime> <5:auth1> <6:cookie> <7:baseinput>"
+	leastArgs=`echo -n ${argsMessage} | sed "s;[^*];;g" | wc -m`
+
+	[ $# -ge ${leastArgs} ] || { eval "echo -e \"${argsErrorHead}${argsMessage}\" "; exit; }
+	[ -d "$1" ] && cd $1 || { echo -e "!! \$1 not found.\nset workDir in \$1."; exit; }
+
+	channel=$2
+	fromtime=$3
+	totime=$4
+	auth1=${5:-"auth1_fms"}
+	cookiefile=${6:-"cookie.txt"}
+	baseinput=${7:-"baseinput.m3u8"}
+
+	authtoken=$(cat ${auth1} | tr -d "\r" | grep -i "authtoken=" | cut -d= -f2)
+
+	[ -z ${authtoken} ] && { echo "authtoken not found. check auth1(${auth1})"; exit 1; }
+
+	wget  -q \
+		--header="pragma: no-cache" \
+		--header="Content-Type: application/x-www-form-urlencoded" \
+		--header="X-Radiko-AuthToken: ${authtoken}" \
+		--load-cookies $cookiefile \
+		--no-check-certificate \
+		-O ${baseinput} \
+		"https://radiko.jp/v2/api/ts/playlist.m3u8?l=15&station_id=$channel&ft=$fromtime&to=$totime"
+
+	[ -z $(stat --printf="%s" ${baseinput}) ] && { echo "baseinput URL not found (invalid cookie)"; exit 1; }
+
+}
