@@ -1,248 +1,151 @@
 #!/bin/bash
-# 20161017 modified by mapi
-# 20161120 modified by mapi
-# 20170514 modified by sickleaf
-# 20170918 modified by sickleaf
-# 20180902 modified by sickleaf
 
-scriptDir=$(cd $(dirname $0); pwd);
-cd ${scriptDir}
+trap 'rm -rf /tmp/radiko-$$' HUP INT KILL TERM
 
-configScript=config.sh
-functionScript=function.sh
+radikoCredentialPath=/home/radipi/radikoInfo/
 
-. ./${configScript}
-. ./${functionScript}
+ROOTPATH=$(cd $(dirname $0); pwd);
+funcScript="${ROOTPATH}"/radikoScript.sh
+childScriptPath="${ROOTPATH}"/childTimeFree.sh
 
-radioDir=`configGrep radioDir`
+argsErrorHead='!!  args missing. present args=${#}, needed at least ${leastArgs} (functionName=$0})\n'
+argsMessage=" usage: <1*:stationID/radikoURL> <2*:duration> <3:startTime(yyyymmddhhmmss)>"
+leastArgs=`echo -n ${argsMessage} | sed "s;[^*];;g" | wc -m`
 
-secretKey=`concatPath ${keyDir} ${secretKeyName}`
-cipherText=`concatPath ${keyDir} ${cipherTextName}`
-pass=`decryptPass ${secretKey} ${cipherText}`
+usage="usage(1): TBS 120 20210615010000\nusage(2): https://radiko.jp/#!/ts/TBS/20210615010000 120\nusage(3): https://radiko.jp/share/?sid=TBS&t=20210615010000 120"
 
+[ $# -ge ${leastArgs:-0} ] || { eval "echo -e \"${argsErrorHead}${argsMessage}\n${usage}\" "; exit; }
 
-childScriptPath=`concatPath ${scriptDir} ${childScriptName}`
+. ${funcScript}
 
+programInfo=$1
+duration=$2
+fromTime=$3
 
-mpvOption="--no-video --msg-level=all=info --idle=no --input-ipc-server=${mpvSocket}"
+if [ -n "$(echo ${programInfo} | grep -Eo [0-9]{14})" ];then
 
+	# URL copied from browser
+	stationID=`echo ${programInfo} | grep -o sid.*\& | sed "y/\&/=/" |  cut -d= -f2`
 
-if [ ! -d $radioDir ]; then
-	mkdir -p $radioDir
-	echo "[make directory]:$radioDir"
-fi
+	# URL copied from radiko function
+	[ -n "${stationID}" ] && stationID=`echo ${programInfo} | grep -o "\#\!/ts.*/" | cut -d/ -f3` 
 
-
-
-if [ $# -eq 3 ]; then
-	channel=$1
-	fromtime=$2
-	totime=$3
-
-	dirName="${fromtime}_${channel}"
-	dirPath="${radioDir}/${dirName}"
-	tmpDirPath="${dirPath}/tmp"
-
-	mkdir -m 777 ${dirPath}
-	mkdir -m 777 ${tmpDirPath}
+	fromTime=`echo ${programInfo} | grep -Eo [0-9]{14}`
+	
 else
-  echo "usage : $0 channel_name fromtime totime"
-  exit 1
+	stationID=${programInfo}
 fi
 
-auth1_fms="${radioDir}/free_${channel}.auth1_fms"
-auth2_fms="${radioDir}/free_${channel}.auth2_fms"
+toTime=`echo ${fromTime} |
+       	sed -e "s/[0-9][0-9]/ &/g" -e "s/ \([0-9][0-9]\) /\1/" | # separate startTime into YYYY_MM_DD_HH_MM_SS 
+	       	awk '{printf("%d-%d-%d %d:%d:%d",$1,$2,$3,$4,$5,$6)}' | # YYYY-MM-DD HH:MM:SS format
+	       	xargs -I@ date --date="@ ${duration}min" +%Y%m%d%H%M%S` # calculate time after $length minutes
 
-loginfile="${radioDir}/login"
-cookiefile=${radioDir}/cookie.txt
-playerfile=${radioDir}/player.swf
-keyfile=${radioDir}/authkey.png
+# if mail is blank, exit
+if [ ! -f "${ROOTPATH}/mail" ]; then
+	echo ! mail is blank [type mailAddress]
+	#exit 0
+else
+	#read mail
+	mail=$(cat "${ROOTPATH}/mail")
+fi
 
-baseinput="${dirPath}/baseinput.m3u8"
-grepinput="${dirPath}/grepinput.m3u8"
 
-wholeAAC="${dirPath}/wholeAAC.txt"
+# set temporary workdir
+workdir=/tmp/radiko-$$
+tmpDirPath=${workdir}/tmp
+mkdir -p ${workdir} ${tmpDirPath}
+chmod 777 ${workdir}
 
-firstAAC="${dirPath}/firstAAC.txt"
-secondAAC="${dirPath}/secondAAC.txt"
-restAAC="${dirPath}/restAAC.txt"
 
-firstAACfile="${dirPath}/firstAAC.aac"
-secondAACfile="${dirPath}/secondAAC.aac"
-restAACfile="${dirPath}/restAAC.aac"
+nowTime=`date '+%Y%m%d%H%M%S'`
+if [ "${nowTime}" \< "${toTime}" ]; then
+	echo "recording time not finished(nowTime:${nowTime},toTime:${toTime})";
+	exit
+fi
+
+echo "stationID:${stationID}"
+echo "duration:${duration}"
+echo "fromTime:${fromTime}"
+echo "  toTime:${toTime}"
+echo "mail:${mail}"
+
+baseinput="${workdir}/baseinput.m3u8"
+wholeAACList="${workdir}/wholeAAC.txt"
+firstAACfile="${workdir}/firstAAC.aac"
+secondAACfile="${workdir}/secondAAC.aac"
+restAACfile="${workdir}/restAAC.aac"
+
+ffmpegOption=" -y  -protocol_whitelist file,pipe,crypto   -f concat -i - -c copy -loglevel fatal "
+
+mpvSocket=/tmp/remocon.socket
+mpvOption=" --no-video --msg-level=all=fatal --idle=no --input-ipc-server=${mpvSocket} "
+bluetoothaddr=$(hcitool con | grep -Eo "[0-9A-F:]{9,}")
+[ "$(echo $bluetoothaddr)" = "" ] || mpvOption=" --audio-device=alsa/bluealsa "${mpvOption}
+
+ffmpegOption=" -y -protocol_whitelist file,pipe,crypto -f concat -i - -c copy -loglevel fatal "
+
+#auth1_fms="${workdir}/free_${channel}.auth1_fms"
+#auth2_fms="${workdir}/free_${channel}.auth2_fms"
+
+#loginfile="${workdir}/login"
+#cookiefile=${workdir}/cookie.txt
+#playerfile=${workdir}/player.swf
+#keyfile=${workdir}/authkey.png
+
+#if [ -z "$3" ]; then
+#	firstAACfile="/tmp/${firstName}.aac"
+#	secondAACfile="/tmp/${secondName}.aac"
+#	restAACfile="/tmp/${restName}.aac"
+#fi
+
+
+#baseinput="${workdir}/baseinput.m3u8"
+#grepinput="${workdir}/grepinput.m3u8"
+
+#wholeAAC="${workdir}/wholeAAC.txt"
 
 #------------------------------------------------------------
 #------------------------------------------------------------
 #------------------------------------------------------------
 #------------------------------------------------------------
 
+# check enpass / set password
+checkEnpass $radikoCredentialPath
 
-echo "--- Play Information"
-echo ""
-echo "Channel   : $channel"
-echo "FromTime  : $fromtime"
-echo "ToTime    : $totime"
-echo ""
+# save ${cookieFile}
+getCookieFile $workdir $mail $cookiefile
 
+# save ${auth1}
+getAuth1 $workdir
 
+# save ${auth2}
+getAuth2 $workdir
 
-###
-# radiko premium
-###
-if [ $mail ]; then
+# play radiko
+getStreamURL $workdir $stationID $fromTime $toTime
 
-	rm -r ${cookiefile} ${loginfile}
-
-  wget -q --save-cookie=$cookiefile \
-       --keep-session-cookies \
-       --post-data="mail=$mail&pass=$pass" \
-       -O $loginfile \
-       https://radiko.jp/ap/member/login/login
-
-  if [ ! -f $cookiefile ]; then
-    echo "failed login"
-    exit 1
-  fi
-fi
-
-	rm -r ${keyfile}
-
-#
-# get player
-#
-if [ ! -f $playerfile ]; then
-  wget -q -O $playerfile $playerurl
-
-  if [ $? -ne 0 ]; then
-    echo "failed get player"
-    exit 1
-  fi
-fi
-
-#
-# get keydata (need swftool)
-#
-if [ ! -f $keyfile ]; then
-  swfextract -b 12 $playerfile -o $keyfile
-
-  if [ ! -f $keyfile ]; then
-    echo "failed get keydata"
-    exit 1
-  fi
-fi
-
-if [ -f $auth1_fms ]; then
-  rm -f $auth1_fms
-fi
-
-#
-# access auth1_fms
-#
-wget  -q \
-     --header="pragma: no-cache" \
-     --header="X-Radiko-App: pc_ts" \
-     --header="X-Radiko-App-Version: 4.0.0" \
-     --header="X-Radiko-User: test-stream" \
-     --header="X-Radiko-Device: pc" \
-     --post-data='\r\n' \
-     --no-check-certificate \
-     --load-cookies $cookiefile \
-     --save-headers \
-     -O ${auth1_fms} \
-     https://radiko.jp/v2/api/auth1_fms
-
-if [ $? -ne 0 ]; then
-  echo "failed auth1 process"
-  exit 1
-fi
-
-#
-# get partial key
-#
-authtoken=`perl -ne 'print $1 if(/x-radiko-authtoken: ([\w-]+)/i)' ${auth1_fms}`
-offset=`perl -ne 'print $1 if(/x-radiko-keyoffset: (\d+)/i)' ${auth1_fms}`
-length=`perl -ne 'print $1 if(/x-radiko-keylength: (\d+)/i)' ${auth1_fms}`
-
-partialkey=`dd if=$keyfile bs=1 skip=${offset} count=${length} 2> /dev/null | base64`
-
-echo "authtoken: ${authtoken} \noffset: ${offset} length: ${length} \npartialkey: $partialkey"
-
-rm -f $auth1_fms
-
-if [ -f $auth2_fms ]; then
-  rm -f $auth2_fms
-fi
-
-#
-# access auth2_fms
-#
-wget  -q \
-     --header="pragma: no-cache" \
-     --header="X-Radiko-App: pc_ts" \
-     --header="X-Radiko-App-Version: 4.0.0" \
-     --header="X-Radiko-User: test-stream" \
-     --header="X-Radiko-Device: pc" \
-     --header="X-Radiko-AuthToken: ${authtoken}" \
-     --header="X-Radiko-PartialKey: ${partialkey}" \
-     --post-data='\r\n' \
-     --load-cookies $cookiefile \
-     --no-check-certificate \
-     -O ${auth2_fms} \
-     https://radiko.jp/v2/api/auth2_fms
-
-if [ $? -ne 0 -o ! -f $auth2_fms ]; then
-  echo "failed auth2 process"
-  exit 1
-fi
-
-echo "authentication success"
-
-areaid=`perl -ne 'print $1 if(/^([^,]+),/i)' ${auth2_fms}`
-echo "[AreaID]: $areaid"
-
-rm -f $auth2_fms
-
-#
-# get stream-url
-#
-
-wget -q \
-	--header="pragma: no-cache" \
-	--header="Content-Type: application/x-www-form-urlencoded" \
-	--header="X-Radiko-AuthToken: ${authtoken}" \
-	--header="Referer: ${playerurl}"\
-	--post-data='flash=1' \
-     	--load-cookies $cookiefile \
-	--no-check-certificate \
-	-O ${baseinput} \
-	"https://radiko.jp/v2/api/ts/playlist.m3u8?l=15&station_id=$channel&ft=$fromtime&to=$totime"
 
 stream_url=$(grep radiko ${baseinput})
-echo "[StreamURL] $stream_url"
+rm ${baseinput}
 
-wget  $stream_url  -O ${grepinput}
-sh -c "grep radiko ${grepinput} > ${wholeAAC}"
- 
+wget -q $stream_url -O - | grep "radiko.jp/sound" > ${wholeAACList}
 
-	cat ${wholeAAC} | head -n 12 | while read line; do wget --no-verbose -nc -P ${tmpDirPath} "$line"; done
-	sh ${childScriptPath} ${dirPath} &
-
-	fixed_string=""
-	ls ${tmpDirPath}/* | head -n 12 > ${firstAAC}
-	while read line;
-		do 
-			fixed_string="${fixed_string}"" -cat ""$line"
-	done < ${firstAAC}
-
-	MP4Box -sbr ${fixed_string} -new ${firstAACfile}
+# download first 12 AAC files
+cat ${wholeAACList} | head -n 12 | xargs -P 0 -L 1 wget -q -nc -P ${tmpDirPath}
 
 
-	if [ $? = 0 ]; then
-		mpv ${mpvOption} ${firstAACfile}  && mpv  ${mpvOption} ${secondAACfile} && mpv  ${mpvOption} ${restAACfile} 
+cd ${tmpDirPath}
+# concat first 12 AAC files(1 min)
+cat ${wholeAACList} | 
+head -12 | 
+awk -F"/" '{print "file "$NF}' | 
+ffmpeg ${ffmpegOption} ${firstAACfile} | bash
 
-	else
-		mpv ${mpvOption} ${firstAACfile}
-	fi
+# start download/concat rest files background
+bash "${childScriptPath}" "${wholeAACList}" "${secondAACfile}" "${restAACfile}" &
 
-	rm -r ${baseinput} ${grepinput}
+#play aac file
+(mpv ${mpvOption} ${firstAACfile} ${secondAACfile} ${restAACfile}; cd; rm -rf "/tmp/radiko-$$" ) & 
+
 
