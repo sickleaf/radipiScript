@@ -43,6 +43,9 @@ if [ ! $mpvcheck -eq 0 -a "${grepMPV}" = "" ]; then
 
 fi
 
+timefreeCheck=$(ps aux | grep [t]imefree | sed "s;.*\.sh;;; s;^.;;" )
+
+[ "$timefreeCheck" = "" ] || grepMPV="$timefreeCheck"
 
 timepos=$(${funcScript} /tmp/remocon.socket get_property '"time-pos"' 2> /dev/null | grep -Eo "[0-9]+\." | sed "s;.$;;g")
 percent=$(${funcScript} /tmp/remocon.socket get_property '"percent-pos"'  2> /dev/null | grep -Eo "[0-9]+\..")
