@@ -157,7 +157,7 @@ checkEnpass(){
 }
 
 getStreamURL(){
-	echo ${FUNCNAME[0]}
+	echo "*"${FUNCNAME[0]}
 	argsMessage="usage: <1*:workDir> <2*:channel> <3*:fromtime> <4*:totime> <5:auth1> <6:cookie> <7:baseinput>"
 	leastArgs=`echo -n ${argsMessage} | sed "s;[^*];;g" | wc -m`
 
@@ -187,3 +187,5 @@ getStreamURL(){
 	[ -z $(stat --printf="%s" ${baseinput}) ] && { echo "baseinput URL not found (invalid cookie)"; exit 1; }
 
 }
+
+

@@ -17,7 +17,7 @@ startTime=$(find ${tmpDirPath} -type f | sort | head -1 | grep -o "_[0-9]*_" | a
 cat ${wholeAACList} | 
 tail -n +13 | 
 head  -108 | 
-xargs -P 0 -L 1 wget -q -nc -P ${tmpDirPath} 2> /dev/null
+xargs -P 4 -L 1 wget -q --timeout=10 -nc -P ${tmpDirPath} 2> /dev/null
 
 ## check aac file downloaded (second)
 secondRetryList="(no missing file)"
@@ -34,11 +34,13 @@ done
 echo second:${secondRetryList}
 
 # if secondRetryList exists, re-download
-for rlist in `echo ${secondRetryList} | sed "s;^@;;g" | tr @ "\n"`; do
-	url=$(cat ${wholeAACList} | grep "_${rlist}_" )
-	#echo $(cat ${wholeAACList} | grep "_${rlist}_" )
-	[ -n "${url}" ] && wget -q -nc -P ${tmpDirPath} ${url}
-done
+if [ ! "$(echo ${secondRetryList} | grep '@')" = "" ]; then
+	for rlist in `echo ${secondRetryList} | sed "s;^@;;g" | tr @ "\n"`; do
+		url=$(cat ${wholeAACList} | grep "_${rlist}_" )
+		#echo $(cat ${wholeAACList} | grep "_${rlist}_" )
+		[ -n "${url}" ] && wget -q -nc -P ${tmpDirPath} ${url}
+	done
+fi
 
 echo concating aac files for secondAACFile
 
@@ -49,10 +51,12 @@ head -108 |
 awk -F"/" '{print "file "$NF}' | 
 ffmpeg ${ffmpegOption} ${secondAACFile} | bash
 
+echo "generated:"${secondAACFile}
+
 # download aac files for restAACFile
 cat ${wholeAACList} | 
 tail -n +121 | 
-xargs -P 0 -L 1 wget -q -nc -P ${tmpDirPath} 2> /dev/null
+xargs -P 4 -L 1 wget -q --timeout=10 -nc -P ${tmpDirPath} 2> /dev/null
 
 ## check aac file downloaded (last)
 lastRetryList="(no missing file)"
@@ -70,11 +74,13 @@ done
 echo last:${lastRetryList}
 
 # if lastRetryList exists, re-download
-for rlist in `echo ${lastRetryList} | sed "s;^@;;g" | tr @ "\n"`; do
-	url=$(cat ${wholeAACList} | grep "_${rlist}_" )
-	#echo $(cat ${wholeAACList} | grep "_${rlist}_" )
-	[ -n "${url}" ] && wget -q -nc -P ${tmpDirPath} ${url}
-done
+if [ ! "$(echo ${lastRetryList} | grep '@')" = "" ]; then
+	for rlist in `echo ${lastRetryList} | sed "s;^@;;g" | tr @ "\n"`; do
+		url=$(cat ${wholeAACList} | grep "_${rlist}_" )
+		#echo $(cat ${wholeAACList} | grep "_${rlist}_" )
+		[ -n "${url}" ] && wget -q -nc -P ${tmpDirPath} ${url}
+	done
+fi
 
 echo concating aac files for restAACFile
 
@@ -83,6 +89,8 @@ cat ${wholeAACList} |
 tail -n +121 | 
 awk -F"/" '{print "file "$NF}' | 
 ffmpeg ${ffmpegOption} ${restAACFile} | bash
+
+echo "generated:"${restAACFile}
 
 cd ${wholeDirPath}
 
