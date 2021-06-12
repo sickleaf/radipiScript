@@ -2,6 +2,8 @@ from flask import Flask,render_template,request
 from datetime import datetime
 import subprocess
 import json
+import re
+import time
 
 app = Flask(__name__)
 
@@ -175,12 +177,55 @@ def autoPlay():
 def timetable():
     timetable=request.args.get("param")
     channel=request.args.get("ch")
-    
+   
     cmd="/home/radipi/Script/autoPlayByTime.sh " + timetable
     o = subprocess.Popen(cmd,shell=True,stdout=subprocess.PIPE).stdout
     return "channel[" + channel+ "]"
 
+@app.route('/timefree')
+def timefree():
+    scriptName=request.args.get("param")
+    IDorURL=request.args.get("value")
+    duration=request.args.get("numbers")
+    ymdhms=request.args.get("ymdhms")
+    httpPattern="https?://[\w/:%#!\$&\?\(\)~\.=\+\-]+"
 
+
+    # adapt for 3 pattern with timefree.sh
+
+    # if datetime-local is set, remove ":" "," "T"
+    if ymdhms != "":
+       ymdhms=re.sub(r"[\:\-T]","",ymdhms)+"00"
+
+    # IDorURL(arg 1) must be speceified
+    if IDorURL != "":
+       ###IDorURL=IDorURL.replace('!','\!')
+       ###IDorURL=re.sub("!","\!",IDorURL)
+
+       start_time = time.perf_counter()
+
+       # if IDorURL is URL, extract only radiko URL
+       if re.match("http",IDorURL):
+            IDorURL=re.findall(httpPattern,IDorURL)[0]
+
+       # make args for timefree.sh
+       args=" '"+ IDorURL + "' " + duration + " " + ymdhms;
+       cmd="/home/radipi/Script/" + scriptName + args;
+       print(cmd)
+
+       o = subprocess.run(cmd,shell=True,stdout=subprocess.PIPE).stdout
+
+       execution_time = time.perf_counter() - start_time
+
+       if int(execution_time) > 3:
+          mess=cmd
+       else:
+          mess=o.decode().strip()
+          mess="<br />".join(mess.split("\n"))
+    else:
+       mess="value is missing. specify radiko URL or stationID.";
+
+    return str(mess)
 
 @app.route('/changevol')
 def changevol():
