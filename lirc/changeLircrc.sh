@@ -21,7 +21,7 @@ buttonList=$(cat ${editFile} | grep "button" | cut -d"=" -f2 | sed "s; ;;g" | tr
 
 [ "$buttonList" = "" ] && { echo "button name not found in ${editFile}." ; exit; }
 
-[ ${allFlag} = "true" ] && editnum=$(echo $buttonList | tr "," "\n" | grep -c ^)
+[ ${allFlag} = "true" ] && editnum=$(grep -c "button =" ${editFile})
 
 for i in $(seq $editnum);
 do
@@ -47,12 +47,12 @@ do
 	printf "%s\n" "(1)playradiko.sh  (2)playStreaming.sh  (3)playLocalfile.sh  (4)playFM.sh  (5)setVolume.sh  (6)killsound.sh  (7)other"
 	
 	read flag
-	[ "$(echo $flag | grep -Eo [123456])" = "" ] && { echo select from 1to6.try again.; exit 1; }
+	[ "$(echo $flag | grep -Eo [1234567])" = "" ] && { echo select from 1to7.try again.; exit 1; }
 	
-	[ "${flag}" -eq 1 ] && defaultCommand="/home/radipi/Script/playradiko.sh <*ID> <duration>"
-	[ "${flag}" -eq 2 ] && defaultCommand="/home/radipi/Script/playStreaming.sh <*ID> <duration>"
-	[ "${flag}" -eq 3 ] && defaultCommand="/home/radipi/Script/playLocalfile.sh <*filePath> <filenumber> <sortOption> <filter>"
-	[ "${flag}" -eq 4 ] && defaultCommand="/home/radipi/Script/playFM.sh <*frequency(MHz)>"
+	[ "${flag}" -eq 1 ] && defaultCommand="/home/radipi/Script/killsound.sh TERM; /home/radipi/Script/playradiko.sh <*ID> <duration>"
+	[ "${flag}" -eq 2 ] && defaultCommand="/home/radipi/Script/killsound.sh TERM; /home/radipi/Script/playStreaming.sh <*ID> <duration>"
+	[ "${flag}" -eq 3 ] && defaultCommand="/home/radipi/Script/killsound.sh TERM; /home/radipi/Script/playLocalfile.sh <*filePath> <filenumber> <sortOption> <filter>"
+	[ "${flag}" -eq 4 ] && defaultCommand="/home/radipi/Script/killsound.sh TERM; /home/radipi/Script/playFM.sh <*frequency(MHz)>"
 	[ "${flag}" -eq 5 ] && defaultCommand="/home/radipi/Script/setVolume.sh <*absolute/relative volume level> <-/+(relative flag)>"
 	[ "${flag}" -eq 6 ] && defaultCommand="/home/radipi/Script/killsound.sh TERM"
 	[ "${flag}" -eq 7 ] && defaultCommand=$(sed -n "/button = ${rcode}/{N;N;p}" ${editFile} | tail -1 | cut -d"=" -f2-)
