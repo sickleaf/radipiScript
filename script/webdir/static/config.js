@@ -32,6 +32,7 @@ Radipi.ch2 ="/timetable?ch=2&param=/tmp/sheet2"
 Radipi.ch3 ="/timetable?ch=3&param=/tmp/sheet3"
 
 Radipi.FMtuner="/fmtuner?param=playFM.sh"
+Radipi.timefree="/timefree?param=timefree.sh"
 
 Radipi.getAudio="/getAudio"
 
