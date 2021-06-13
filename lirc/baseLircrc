@@ -1,0 +1,190 @@
+begin
+button = power
+prog = irexec
+config = 
+end
+
+begin
+button = inputSW
+prog = irexec
+config = 
+end
+
+
+begin
+button = broadSW
+prog = irexec
+config = 
+end
+
+begin
+button = volup
+prog = irexec
+config = 
+end
+
+begin
+button = voldown
+prog = irexec
+config = 
+end
+
+
+begin
+button = up
+prog = irexec
+config = 
+end
+
+begin
+button = down
+prog = irexec
+config = 
+end
+
+begin
+button = left
+prog = irexec
+config = 
+end
+
+begin
+button = right
+prog = irexec
+config = 
+end
+
+begin
+button = decide
+prog = irexec
+config = 
+end
+
+begin
+button = dbutton
+prog = irexec
+config = 
+end
+
+begin
+button = back
+prog = irexec
+config = 
+end
+
+begin
+button = menu
+prog = irexec
+config = 
+end
+
+
+begin
+button = program
+prog = irexec
+config = 
+end
+
+
+begin
+button = blue
+prog = irexec
+config = 
+end
+
+begin
+button = red
+prog = irexec
+config = 
+end
+
+begin
+button = green
+prog = irexec
+config = 
+end
+
+begin
+button = yellow
+prog = irexec
+config = 
+end
+
+
+
+begin
+button = 1
+prog = irexec
+config = 
+end
+
+begin
+button = 2
+prog = irexec
+config = 
+end
+
+begin
+button = 3
+prog = irexec
+config = 
+end
+
+begin
+button = 4
+prog = irexec
+config = 
+end
+
+begin
+button = 5
+prog = irexec
+config = 
+flags = quit
+end
+
+begin
+button = 6
+prog = irexec
+config = 
+end
+
+begin
+button = 7
+prog = irexec
+config = 
+end
+
+
+begin
+button = 8
+prog = irexec
+config = 
+end
+
+
+begin
+button = 9
+prog = irexec
+config = 
+end
+
+
+begin
+button = 10
+prog = irexec
+config = 
+end
+
+
+begin
+button = 11
+prog = irexec
+config = 
+end
+
+begin
+button = 12
+prog = irexec
+config = 
+end
