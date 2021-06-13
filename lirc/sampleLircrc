@@ -19,11 +19,11 @@ end
 begin
 button = menu
 prog = irexec
-config = /home/radipi/Script/playLocalfile.sh /mnt/radipiDrive 3
+config = /home/radipi/Script/killsound.sh TERM; /home/radipi/Script/playLocalfile.sh /mnt/radipiDrive 3
 end
 
 begin
 button = blue
 prog = irexec
-config = /home/radipi/Script/playradiko.sh JOAK
+config = /home/radipi/Script/killsound.sh TERM; /home/radipi/Script/playradiko.sh JOAK
 end
