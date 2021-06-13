@@ -1,0 +1,29 @@
+begin
+button = power
+prog = irexec
+config = /home/radipi/Script/killsound.sh TERM
+end
+
+begin
+button = volup
+prog = irexec
+config = /home/radipi/Script/setVolume.sh 3 +
+end
+
+begin
+button = voldown
+prog = irexec
+config = /home/radipi/Script/setVolume.sh 3 -
+end
+
+begin
+button = menu
+prog = irexec
+config = /home/radipi/Script/playLocalfile.sh /mnt/radipiDrive 3
+end
+
+begin
+button = blue
+prog = irexec
+config = /home/radipi/Script/playradiko.sh JOAK
+end
