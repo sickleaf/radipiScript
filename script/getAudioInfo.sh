@@ -47,12 +47,16 @@ timefreeCheck=$(ps aux | grep [t]imefree | sed "s;.*\.sh;;; s;^.;;" )
 
 [ "$timefreeCheck" = "" ] || grepMPV="$timefreeCheck"
 
-timepos=$(${funcScript} /tmp/remocon.socket get_property '"time-pos"' 2> /dev/null | grep -Eo "[0-9]+\." | sed "s;.$;;g")
-percent=$(${funcScript} /tmp/remocon.socket get_property '"percent-pos"'  2> /dev/null | grep -Eo "[0-9]+\..")
-remain=$(${funcScript} /tmp/remocon.socket get_property '"playtime-remaining"'  2> /dev/null | grep -Eo "[0-9]+\." | sed "s;.$;;g")
-duration=$(${funcScript} /tmp/remocon.socket get_property '"duration"'  2> /dev/null | grep -Eo "[0-9]+\." | sed "s;.$;;g")
+timepos=$(${funcScript}  get_property '"time-pos"' 2> /dev/null | grep -Eo "[0-9]+\." | sed "s;.$;;g")
+percent=$(${funcScript}  get_property '"percent-pos"'  2> /dev/null | grep -Eo "[0-9]+\..")
+remain=$(${funcScript}  get_property '"playtime-remaining"'  2> /dev/null | grep -Eo "[0-9]+\." | sed "s;.$;;g")
+duration=$(${funcScript} get_property '"duration"'  2> /dev/null | grep -Eo "[0-9]+\." | sed "s;.$;;g")
+speed=$(${funcScript} get_property \"speed\" 0 2> /dev/null | sed 's/,.*//g' | cut -d: -f2 | tail -1 | sed -E 's;0{2,};;g' )
 
-statusInfo=${percent}"%("${timepos}"sec/"${duration}"sec, last "${remain}"sec)"
+speedMessage=""
+[ ! "${speed}" = "1." ] && speedMessage=", x${speed}"
+
+statusInfo=${percent}"%("${timepos}"sec/"${duration}"sec, last "${remain}"sec${speedMessage})"
 
 echo ${grepMPV}
 echo
