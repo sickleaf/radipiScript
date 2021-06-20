@@ -101,13 +101,13 @@ $( function() {
 		$('.foreach').each(function(index){
 			index = index+1;
 			$(this).attr("value",'Radipi.mnt'+(index));
-			$(this).text("playUSB("+index+")");
+			$(this).text("playLocal"+index);
 			$(this).removeClass("setChecker");
 			$(this).addClass("setCheckerWithout0");
 		});
 
-		$('#keymenu').attr("value",'Radipi.timefree');
-		$('#keymenu').text("timefree");
+		$('#keymenu').attr("value",'Radipi.FMtuner');
+		$('#keymenu').text("FMtuner");
 		$('#keymenu').addClass("getParam setChecker");
 
 		$.ajax( {
@@ -235,47 +235,47 @@ function getAudioInfo(){
         <div class="grid-base container4">
 	        <button id="radiko" class="grid-item h5 getParam" value="Radipi.radiko">radiko(ID)</button>
 	        <button id="random" class="grid-item h5" value="Radipi.radikoRandom">radiko(random)</button>
-	        <button id="playStreaming" class="grid-item h5 getParam setChecker" value="Radipi.playStreaming">streaming(ID)</button>
-	        <button id="randomStreaming" class="grid-item h5 setChecker" value="Radipi.randomStreaming">streaming(random)</button>
+	        <button id="playStreaming" class="grid-item h5 getParam setChecker" value="Radipi.playStreaming">streamingList(ID)</button>
+	        <button id="randomStreaming" class="grid-item h5 setChecker" value="Radipi.randomStreaming">streamingList(random)</button>
         </div>
 
         <div class="grid-base container3">
-	        <button id="joakfm" class="grid-item h5" value="Radipi.JOAKFM">NHK-FM</button>
+	        <button id="joak" class="grid-item h5" value="Radipi.JOAK">NHKR1</button>
 	        <button id="bbcworld" class="grid-item h5" value="Radipi.BBCWorld">BBCWorld</button>
-	        <button id="fmtuner" class="grid-item h5 getParam" value="Radipi.FMtuner">playFM</button>
+		<button id="timefree" class="grid-item h5 getParam setChecker" value="Radipi.timefree">timefree</button>
         </div>
  
-        <div class="grid-base container2">
-	        <button id="toggle" class="grid-item h5 setChecker" value="Radipi.toggle">Stop/Play</button>
-	        <button id="quit" class="grid-item h5" value="Radipi.quit">Quit</button>
-        </div>
  
         <div class="grid-base container4">
-		<button id="menu1" class="grid-item h5 foreach getParam setCheckerWithout0" value="Radipi.mnt1">playUSB(1)</button>
-	        <button id="menu2" class="grid-item h5 foreach getParam setCheckerWithout0" value="Radipi.mnt2">playUSB(2)</button>
-	        <button id="menu3" class="grid-item h5 foreach getParam setCheckerWithout0" value="Radipi.mnt3">playUSB(3)</button>
-		<button id="keymenu" class="grid-item h5 getParam setChecker" value="Radipi.timefree">timefree</button>
+		<button id="menu1" class="grid-item h5 foreach getParam setCheckerWithout0" value="Radipi.mnt1">playLocal1</button>
+	        <button id="menu2" class="grid-item h5 foreach getParam setCheckerWithout0" value="Radipi.mnt2">playLocal2</button>
+	        <button id="menu3" class="grid-item h5 foreach getParam setCheckerWithout0" value="Radipi.mnt3">playLocal3</button>
+	        <button id="keymenu" class="grid-item h5 getParam" value="Radipi.FMtuner">FMtuner</button>
         </div>
 
-       
+        <div class="grid-base container2">
+	        <button id="toggle" class="grid-item control h5 setChecker" value="Radipi.toggle">Pause/Play</button>
+	        <button id="quit" class="grid-item control h5" value="Radipi.quit">Stop</button>
+        </div>
+      
         <div class="grid-base container4">
-	        <button id="soundminus" class="grid-item h5 setChecker" value="Radipi.voldown">volume[-]</button>
-	        <button id="soundminus" class="grid-item h5 setChecker" value="Radipi.speeddown">speed-0.1x</button>
-	        <button id="soundplus" class="grid-item h5 setChecker" value="Radipi.speedup">speed+0.1x</button>
-	        <button id="soundplus" class="grid-item h5 setChecker" value="Radipi.volup">volume[+]</button>
+	        <button id="soundminus" class="grid-item control h5 setChecker" value="Radipi.voldown">volume[-]</button>
+	        <button id="soundminus" class="grid-item control h5 setChecker" value="Radipi.speeddown">speed-0.1x</button>
+	        <button id="soundplus" class="grid-item control h5 setChecker" value="Radipi.speedup">speed+0.1x</button>
+	        <button id="soundplus" class="grid-item control h5 setChecker" value="Radipi.volup">volume[+]</button>
         </div>
         
         <div class="grid-base container4">
-	        <button id="back10p" class="grid-item h10 setChecker" value="Radipi.back10p">-10%</button>
-	        <button id="back20sec" class="grid-item h10 setChecker" value="Radipi.back20sec">-20sec</button>
-	        <button id="for20sec" class="grid-item h10 setChecker" value="Radipi.for20sec">20sec</button>
-	        <button id="for10p" class="grid-item h10 setChecker" value="Radipi.for10p">10%</button>
+	        <button id="back10p" class="grid-item control h10 setChecker" value="Radipi.back10p">-10%</button>
+	        <button id="back20sec" class="grid-item control h10 setChecker" value="Radipi.back20sec">-20sec</button>
+	        <button id="for20sec" class="grid-item control h10 setChecker" value="Radipi.for20sec">+20sec</button>
+	        <button id="for10p" class="grid-item control h10 setChecker" value="Radipi.for10p">+10%</button>
         </div>
 
         <div class="grid-base container3">
-	        <button id="backward" class="grid-item h10 setChecker" value="Radipi.backward" >&lt;&lt;</button>
-	        <button id="getAudio" class="grid-item h10 setChecker" value="Radipi.getAudio" >info</button>
-		<button id="forward" class="grid-item h10 setChecker" value="Radipi.forward" >&gt;&gt;</button>
+	        <button id="backward" class="grid-item control h10 setChecker" value="Radipi.backward" >&lt;&lt;</button>
+	        <button id="getAudio" class="grid-item control h10 setChecker" value="Radipi.getAudio" >info</button>
+		<button id="forward" class="grid-item control h10 setChecker" value="Radipi.forward" >&gt;&gt;</button>
         </div>
 
 	<br>
