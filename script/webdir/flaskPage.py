@@ -39,19 +39,6 @@ def setList():
     mess=o.decode().strip()
     return str(mess)
 
-@app.route('/speed')
-def speed():
-    prm=request.args.get("param")
-    if prm == "up":
-        cmd="bash -c 'speed=$(bash /home/radipi/Script/mpvSocket.sh /tmp/remocon.socket get_property \\\"speed\\\" | sed \'s/,.*//g\' | cut -d: -f2 | tail -1);speed=$(echo $speed+0.1 | bc | sed \'s/^/0/g\');/home/radipi/Script/mpvSocket.sh /tmp/remocon.socket speed ${speed} 0'"
-    else:
-        cmd="bash -c 'speed=$(bash /home/radipi/Script/mpvSocket.sh /tmp/remocon.socket get_property \\\"speed\\\" | sed \'s/,.*//g\' | cut -d: -f2 | tail -1);speed=$(echo $speed-0.1 | bc | sed \'s/^/0/g\');/home/radipi/Script/mpvSocket.sh /tmp/remocon.socket speed ${speed} 0'"
-
-    #print(cmd)
-    o = subprocess.Popen(cmd,shell=True,stdout=subprocess.PIPE).stdout
-    return getAudio()
-
-
 
 @app.route('/command')
 def command():
@@ -184,12 +171,14 @@ def timetable():
 
 @app.route('/timefree')
 def timefree():
+    killcmd="/home/radipi/Script/killsound.sh TERM 2>&1"
+    subprocess.run(killcmd,shell=True,stdout=subprocess.PIPE).stdout
+
     scriptName=request.args.get("param")
     IDorURL=request.args.get("value")
     duration=request.args.get("numbers")
     ymdhms=request.args.get("ymdhms")
     httpPattern="https?://[\w/:%#!\$&\?\(\)~\.=\+\-]+"
-
 
     # adapt for 3 pattern with timefree.sh
 
@@ -239,7 +228,7 @@ def changevol():
 @app.route('/mpvSocket')
 def mpvSocket():
     socket=request.args.get("param")
-    cmd="/home/radipi/Script/mpvSocket.sh /tmp/remocon.socket "+socket
+    cmd="/home/radipi/Script/mpvSocket.sh "+socket
     print(cmd)
     o = subprocess.run(cmd,shell=True,stdout=subprocess.PIPE).stdout
 
@@ -248,7 +237,7 @@ def mpvSocket():
 @app.route('/mpvSocketDelay')
 def mpvSocketDelay():
     socket=request.args.get("param")
-    cmd="/home/radipi/Script/mpvSocket.sh /tmp/remocon.socket "+socket
+    cmd="/home/radipi/Script/mpvSocket.sh "+socket
     print(cmd)
     o = subprocess.run(cmd,shell=True,stdout=subprocess.PIPE).stdout
 
