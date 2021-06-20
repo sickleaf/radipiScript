@@ -40,11 +40,10 @@
 
 
 @media screen and (max-width: 840px) {
-
 /* https://www.esz.co.jp/blog/2847.html
  */
 	.grid-item {
-		background-color: #27DF50;
+		background-color: #7ddf27;
 		color: white;
 		border: 0px solid rgba(0, 0, 0, 0);
 		padding: 2px;
@@ -64,7 +63,7 @@
 	
 @media screen and (min-width: 840px){
 	.grid-item {
-		background-color: #27DF50;
+		background-color: #7ddf27;
 		color: white;
 		border: 0px solid rgba(0, 0, 0, 0);
 		padding: 10px;
@@ -82,7 +81,7 @@
 /* https://www.esz.co.jp/blog/2847.html
  */
 	.grid-item {
-		background-color: #27DF50;
+		background-color: #7ddf27;
 		color: white;
 		border: 0px solid rgba(0, 0, 0, 0);
 		padding: 2px;
@@ -103,10 +102,17 @@
 	}
 }
 
+.grid-item.control {
+	background-color: #27DF50;
+}
+
+.grid-item.control:hover {
+	background-color: #4CAF50;
+}
 
 
 .grid-item:hover {
-	background-color: #4CAF50;
+	background-color: #5ba31c;
 	color: black;
 }
 
