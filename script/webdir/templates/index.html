@@ -66,7 +66,8 @@ $( function() {
 			var streamingID=$('#streamingID').val();
 			var sort=$('#sort').val();
 			var ymdhms=$('#timefree').val();
-			var urlData=setval+"&value="+val+"&sort="+sort+"&numbers="+num+"&streamingID="+streamingID+"&ymdhms="+ymdhms+"&setList="+Radipi.setList;
+			var displayCheck=$('#displayCheck').prop('checked');
+			var urlData=setval+"&value="+val+"&sort="+sort+"&numbers="+num+"&streamingID="+streamingID+"&ymdhms="+ymdhms+"&displayFlag="+displayCheck+"&setList="+Radipi.setList;
 			$.ajax( {
 				type: "GET",
 				url: urlData,
@@ -211,6 +212,7 @@ function getAudioInfo(){
 					<option value="s">shuffle</option>
 					<option value="n">name order</option>
 					<option value="r">reverse order</option>
+					<option value="l">latest order</option>
 				</select>
 
 			<label for="streamingID" class="menu">list</label>
@@ -225,11 +227,13 @@ function getAudioInfo(){
 				<input type="radio" id="zero" name="numbers" value="0" checked><label for="zero">0</label>
 				<input type="radio" id="one" name="numbers" value="1"><label for="one">1</label>
 				<input type="radio" id="five" name="numbers" value="5"><label for="five">5</label>
-				<input type="radio" id="ten" name="numbers" value="10"><label for="ten">10</label>
+				<input type="radio" id="thirty" name="numbers" value="30"><label for="thirty">30</label>
 				<input type="radio" id="sixty" name="numbers" value="60"><label for="sixty">60</label>
 				<input type="radio" id="hundred2" name="numbers" value="120"><label for="hundred2">120</label>
-			<label class="menu">datetime</label>
+			<label for="timefree" class="menu">datetime</label>
 				<input type="datetime-local" id="timefree" name="timefree">
+			<label for="displayCheck" class="menu">display</label>
+				<input type="checkbox" id="displayCheck" name="display">
 
 			
         <div class="grid-base container4">
@@ -280,7 +284,6 @@ function getAudioInfo(){
 
 	<br>
         <p id="status">status shows here...</p>
-
 
 
 </body>
