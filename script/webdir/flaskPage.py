@@ -111,10 +111,9 @@ def mntRadio():
     sort=request.args.get("sort")
     displayFlag=request.args.get("displayFlag")
 
-    if displayFlag == "true":
+    # val is blank, AND display checked, override displayFlag (incert blank for $4)
+    if val == ""  and displayFlag == "true":
         displayFlag="'' yes"
-    else:
-        displayFlag=""
 
     cmd="bash /home/radipi/Script/playLocalfile.sh "+path+" "+num+" "+sort+" "+val+" "+displayFlag
     print(cmd)
