@@ -109,8 +109,14 @@ def mntRadio():
     val=request.args.get("value")
     num=request.args.get("numbers")
     sort=request.args.get("sort")
+    displayFlag=request.args.get("displayFlag")
 
-    cmd="bash /home/radipi/Script/playLocalfile.sh "+path+" "+num+" "+sort+" "+val
+    if displayFlag == "true":
+        displayFlag="'' yes"
+    else:
+        displayFlag=""
+
+    cmd="bash /home/radipi/Script/playLocalfile.sh "+path+" "+num+" "+sort+" "+val+" "+displayFlag
     print(cmd)
     
     # if number = 0, just list result. if not, stop & play
