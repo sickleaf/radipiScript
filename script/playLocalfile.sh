@@ -2,7 +2,7 @@
 
 if [ $# -lt 1 ]; then
 	echo "<<usage>>"
-	echo -e "(1*)resourcePath\n(2)play numbers[if number=0, show filelist]\n(3)sort option[s:shuffle/n:name order/r:reverse order/l:latest order]\n(4)filter keyword\n(5)show file length flag"
+	echo -e "(1*)resourcePath\n(2)play numbers[if number=0, show filelist]\n(3)sort option[s:shuffle/n:name order/r:reverse order/l:latest order]\n(4)filter keyword\n(5)show file length flag(true/false)"
 	echo ""
 	echo ""
 	echo -e "[ex1. play 3 files in /mnt/radipiDrive shuffle] \n$0 /mnt/radipiDrive 3 s\n"
@@ -38,7 +38,7 @@ option="--no-video --msg-level=all=info --idle=no ${bluetoothOp} --input-ipc-ser
 
 if [ "$number" -eq 0 ];then
 	playOption=""
-	if [ -n "${showFileLength}" ]; then
+	if [ "${showFileLength}" = "true" ]; then
 		playOption=" | xargs -I@ sh -c 'fLength=\$(ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 \"@\" ) \; export fLength\; printf \"[duration:%6d(%4dmin)] %s\n\" \$fLength \$( echo \$fLength / 60 | bc  ) \"@\"  ' 2>/dev/null"
 	fi
 else
