@@ -6,8 +6,8 @@ dstPath=/home/radipi/.asoundrc
 backupPath=${dstPath%/*}/.asoundrc_backup_`date +%Y%m%d_%H%M%S`
 
 echo ! make backup
-cp -pv ${dstPath} ${backupPath}
-echo backup done ${backupPath}
+cp -pv ${dstPath} ${backupPath} 2>/dev/null
+[ $? -eq 0 ] && echo backup done ${backupPath}
 echo 
 
 cat > ${tempPath} <<EOF
